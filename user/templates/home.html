@@ -1,99 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>DayJeong</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>홈</title>
+
+<style>
+body {
+    font-family: Arial;
+    background:#f5f6fa;
+    margin:0;
+}
+
+.container {
+    width:700px;
+    margin:50px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    padding-bottom:80px; /* 하단바 공간 */
+}
+
+h2 {
+    margin-bottom:15px;
+}
+
+.schedule-box {
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+    color:white;
+}
+
+/* 상태 색 */
+.확정 { background:#4CAF50; }
+.겹침 { background:#f44336; }
+.미확정 { background:orange; }
+.없음 { background:#ccc; color:black; }
+
+/* 하단 네비 */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.bottom-nav a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.bottom-nav a:hover {
+    color: #4CAF50;
+}
+</style>
 </head>
 
-<body style="margin:0; font-family:sans-serif; background:#f2f3f7;">
+<body>
 
-    <!-- 상단바 -->
-    <div style="
-        background:white;
-        padding:16px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        border-bottom:1px solid #eee;
-    ">
-        <div style="font-weight:600;">DayJeong</div>
+<div class="container">
 
-        <a href="/logout/" style="text-decoration:none; color:#ff4d4f;">
-            로그아웃
-        </a>
-    </div>
+<h2>📅 오늘의 일정</h2>
 
-    <div style="padding:20px;">
+<div id="today-schedule"></div>
 
-        <!-- 프로필 -->
-        <div style="
-            background:white;
-            padding:20px;
-            border-radius:20px;
-            box-shadow:0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom:20px;
-        ">
-            <h3 style="margin:0;">👋 {{ request.user.username }}</h3>
-            <p style="color:gray; margin-top:5px;">환영합니다!</p>
-            <p style="font-size:12px; color:gray;">
-                가입일: {{ request.user.date_joined }}
-            </p>
-        </div>
+</div>
 
-        <!-- 일정 -->
-        <div style="
-            background:white;
-            padding:20px;
-            border-radius:20px;
-            box-shadow:0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom:20px;
-        ">
-            <h3 style="margin-top:0;">📅 오늘 일정</h3>
-            <p style="color:gray;">아직 일정이 없습니다</p>
-        </div>
+<!-- 하단바 -->
+<div class="bottom-nav">
+    <a href="/">🏠 홈</a>
+    <a href="/add/">📅 일정</a>
+    <a href="/friends/">👥 친구</a>
+    <a href="/settings/">⚙ 설정</a>
+</div>
 
-        <!-- 일정 추가 -->
-        <a href="/add/">
-            <button style="
-                width:100%;
-                padding:15px;
-                border:none;
-                border-radius:15px;
-                background:#4a6cf7;
-                color:white;
-                font-size:16px;
-            ">
-                + 일정 추가
-            </button>
-        </a>
+<script>
+function loadTodaySchedule(){
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = today.getMonth();
+    const d = today.getDate();
 
-        <!-- 연락 (심플) -->
-        <div style="text-align:center; margin-top:40px; color:gray; font-size:14px;">
+    const key = `cal-${y}-${m}`;
+    const saved = JSON.parse(localStorage.getItem(key)) || {};
 
-            <p>
-                Mail: 
-                <a href="mailto:dayjeong.app@gmail.com" style="color:#4a6cf7; text-decoration:none;">
-                    dayjeong.app@gmail.com
-                </a>
-            </p>
+    const container = document.getElementById("today-schedule");
 
-            <p>
-                Instagram: 
-                <a href="https://instagram.com/dayjeong.app" target="_blank" style="color:#4a6cf7; text-decoration:none;">
-                    @dayjeong.app
-                </a>
-            </p>
+    if(saved[d]){
+        const box = document.createElement("div");
+        box.className = "schedule-box " + saved[d];
+        box.innerText = `${d}일 일정 (${saved[d]})`;
+        container.appendChild(box);
+    } else {
+        const box = document.createElement("div");
+        box.className = "schedule-box 없음";
+        box.innerText = "오늘의 일정 없음";
+        container.appendChild(box);
+    }
+}
 
-            <p>
-                kakaotalk: 
-                <a href="https://pf.kakao.com/_wktuX" target="_blank" style="color:#4a6cf7; text-decoration:none;">
-                    DayJeong
-                </a>
-            </p>
-
-        </div>
-
-    </div>
+loadTodaySchedule();
+</script>
 
 </body>
 </html>
