@@ -11,17 +11,16 @@ body {
     margin:0;
 }
 
-/* 전체 박스 */
+/* 전체 */
 .container {
     width:700px;
     margin:50px auto;
 }
 
-/* 상단 (프로필 + 로그아웃) */
+/* 상단 */
 .top-bar {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-bottom:10px;
 }
 
@@ -34,7 +33,7 @@ body {
     color:#f44336;
 }
 
-/* 일정 카드 */
+/* 카드 */
 .card {
     background:white;
     padding:20px;
@@ -49,11 +48,15 @@ body {
     color:white;
 }
 
-/* 상태 색 */
 .확정 { background:#4CAF50; }
 .겹침 { background:#f44336; }
 .미확정 { background:orange; }
 .없음 { background:#ccc; color:black; }
+
+/* 예정된 일정 제목 */
+h3 {
+    margin-top:20px;
+}
 
 /* 연락망 */
 .contact {
@@ -98,37 +101,28 @@ body {
 
 <div class="container">
 
-    <!-- 🔐 상단 영역 -->
+    <!-- 상단 -->
     <div class="top-bar">
         <div class="profile">👤 {{ request.user.username }}</div>
         <div class="logout"><a href="/logout/">로그아웃</a></div>
     </div>
 
-    <!-- 📅 일정 카드 -->
+    <!-- 일정 카드 -->
     <div class="card">
+
         <h2>📅 오늘의 일정</h2>
         <div id="today-schedule"></div>
+
+        <h3>📌 예정된 일정</h3>
+        <div id="upcoming-schedule"></div>
+
     </div>
 
-    <!-- 📞 연락망 (카드 아래 중앙) -->
+    <!-- 연락망 -->
     <div class="contact">
-        <p>
-            📧 <a href="mailto:dayjeong.app@gmail.com">
-                dayjeong.app@gmail.com
-            </a>
-        </p>
-
-        <p>
-            📸 <a href="https://www.instagram.com/dayjeong.app/" target="_blank">
-                @dayjeong.app
-            </a>
-        </p>
-
-        <p>
-            💬 <a href="https://pf.kakao.com/_wktuX" target="_blank">
-                데이정(DayJeong)
-            </a>
-        </p>
+        <p>📧 <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
+        <p>📸 <a href="https://www.instagram.com/dayjeong.app/" target="_blank">@dayjeong.app</a></p>
+        <p>💬 <a href="https://pf.kakao.com/_wktuX" target="_blank">데이정(DayJeong)</a></p>
     </div>
 
 </div>
@@ -142,31 +136,46 @@ body {
 </div>
 
 <script>
-function loadTodaySchedule(){
+function loadSchedule(){
     const today = new Date();
-    const y = today.getFullYear();
-    const m = today.getMonth();
-    const d = today.getDate();
+    const containerToday = document.getElementById("today-schedule");
+    const containerUpcoming = document.getElementById("upcoming-schedule");
 
-    const key = `cal-${y}-${m}`;
-    const saved = JSON.parse(localStorage.getItem(key)) || {};
+    for(let i = 0; i <= 6; i++){
+        const date = new Date();
+        date.setDate(today.getDate() + i);
 
-    const container = document.getElementById("today-schedule");
+        const y = date.getFullYear();
+        const m = date.getMonth();
+        const d = date.getDate();
 
-    if(saved[d]){
-        const box = document.createElement("div");
-        box.className = "schedule-box " + saved[d].status;
-        box.innerText = `${d}일 - ${saved[d].title} (${saved[d].status})`;
-        container.appendChild(box);
-    } else {
-        const box = document.createElement("div");
-        box.className = "schedule-box 없음";
-        box.innerText = "오늘의 일정 없음";
-        container.appendChild(box);
+        const key = `cal-${y}-${m}`;
+        const saved = JSON.parse(localStorage.getItem(key)) || {};
+
+        if(i === 0){
+            if(saved[d]){
+                const box = document.createElement("div");
+                box.className = "schedule-box " + saved[d].status;
+                box.innerText = `오늘 - ${saved[d].title} (${saved[d].status})`;
+                containerToday.appendChild(box);
+            } else {
+                const box = document.createElement("div");
+                box.className = "schedule-box 없음";
+                box.innerText = "오늘의 일정 없음";
+                containerToday.appendChild(box);
+            }
+        } else {
+            if(saved[d]){
+                const box = document.createElement("div");
+                box.className = "schedule-box " + saved[d].status;
+                box.innerText = `${m+1}/${d} - ${saved[d].title} (${saved[d].status})`;
+                containerUpcoming.appendChild(box);
+            }
+        }
     }
 }
 
-loadTodaySchedule();
+loadSchedule();
 </script>
 
 </body>
