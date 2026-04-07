@@ -24,6 +24,13 @@ h2 {
     margin-bottom:10px;
 }
 
+/* 상단 유저 영역 */
+.top-bar {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
 /* 일정 박스 */
 .schedule-box {
     padding:15px;
@@ -81,10 +88,16 @@ footer a:hover {
 
 <div class="container">
 
+<!-- 🔐 로그인 상태 표시 -->
+<div class="top-bar">
+    <div>👤 {{ request.user.username }}</div>
+    <div><a href="/logout/">로그아웃</a></div>
+</div>
+
 <h2>📅 오늘의 일정</h2>
 <div id="today-schedule"></div>
 
-<!-- ✅ 연락망 footer -->
+<!-- 📞 연락망 -->
 <footer>
     <p>
         Contact:
