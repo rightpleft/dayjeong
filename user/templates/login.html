@@ -15,6 +15,19 @@ body {
     align-items:center;
 }
 
+/* 전체 박스 */
+.wrapper {
+    text-align:center;
+}
+
+/* 로고 */
+.logo {
+    font-size:32px;
+    font-weight:bold;
+    color:white;
+    margin-bottom:20px;
+}
+
 /* 카드 */
 .login-box {
     background:white;
@@ -22,12 +35,6 @@ body {
     border-radius:15px;
     width:300px;
     box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    text-align:center;
-}
-
-/* 타이틀 */
-h2 {
-    margin-bottom:20px;
 }
 
 /* input */
@@ -56,7 +63,7 @@ button:hover {
     background:#574fd6;
 }
 
-/* 하단 링크 */
+/* 링크 */
 .link {
     margin-top:15px;
     font-size:14px;
@@ -66,19 +73,28 @@ button:hover {
 
 <body>
 
-<div class="login-box">
-    <h2>🔐 로그인</h2>
+<div class="wrapper">
 
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="아이디" required>
-        <input type="password" name="password" placeholder="비밀번호" required>
-        <button type="submit">로그인</button>
-    </form>
-
-    <div class="link">
-        계정이 없나요? <a href="/signup/">회원가입</a>
+    <!-- 🔥 로고 -->
+    <div class="logo">
+        DayJeong
     </div>
+
+    <div class="login-box">
+        <h2>🔐 로그인</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="아이디" required>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+
+        <div class="link">
+            계정이 없나요? <a href="/signup/">회원가입</a>
+        </div>
+    </div>
+
 </div>
 
 </body>
