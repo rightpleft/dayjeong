@@ -38,25 +38,21 @@ h2 {
 .미확정 { background:orange; }
 .없음 { background:#ccc; color:black; }
 
-/* 연락 버튼 */
-.contact-buttons {
+/* 연락망 (텍스트형) */
+.contact-text {
     margin-top:20px;
-    display:flex;
-    gap:10px;
-}
-
-.contact-buttons a {
-    flex:1;
     text-align:center;
-    padding:10px;
-    background:#f1f3f5;
-    border-radius:8px;
-    text-decoration:none;
-    color:#333;
+    color:#666;
 }
 
-.contact-buttons a:hover {
-    background:#ddd;
+.contact-text a {
+    text-decoration:none;
+    color:#666;
+}
+
+.contact-text a:hover {
+    text-decoration:underline;
+    color:#000;
 }
 
 /* 하단 네비 */
@@ -87,11 +83,10 @@ h2 {
 <h2>📅 오늘의 일정</h2>
 <div id="today-schedule"></div>
 
-<!-- 연락망 (일정 아래) -->
-<div class="contact-buttons">
-    <a href="mailto:example@email.com">📧 메일</a>
-    <a href="https://instagram.com/dayjeong" target="_blank">📸 인스타</a>
-    <a href="https://open.kakao.com/" target="_blank">💬 카톡</a>
+<!-- 연락망 (텍스트 링크형) -->
+<div class="contact-text">
+    <p>📧 <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
+    <p>📸 <a href="https://instagram.com/dayjeong.app" target="_blank">@dayjeong.app</a></p>
 </div>
 
 </div>
