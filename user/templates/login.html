@@ -8,33 +8,47 @@
 body {
     margin:0;
     font-family: Arial;
-    background: linear-gradient(135deg, #74ebd5, #9face6);
+    background:#f0f0f0; /* 회색 배경 */
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
-/* 전체 박스 */
+/* 전체 */
 .wrapper {
     text-align:center;
 }
 
 /* 로고 */
 .logo {
-    font-size:32px;
+    font-size:44px;
     font-weight:bold;
-    color:white;
-    margin-bottom:20px;
+    color:#222;
+    margin-bottom:25px;
+    letter-spacing:2px;
+}
+
+/* 서브텍스트 */
+.sub {
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
 }
 
 /* 카드 */
 .login-box {
     background:white;
     padding:40px;
-    border-radius:15px;
-    width:300px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    border-radius:12px;
+    width:320px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+/* 제목 */
+h2 {
+    margin-bottom:20px;
+    color:#333;
 }
 
 /* input */
@@ -43,7 +57,8 @@ input {
     padding:12px;
     margin:10px 0;
     border-radius:8px;
-    border:1px solid #ddd;
+    border:1px solid #ccc;
+    font-size:14px;
 }
 
 /* 버튼 */
@@ -53,20 +68,21 @@ button {
     margin-top:10px;
     border:none;
     border-radius:8px;
-    background:#6c63ff;
+    background:#333;
     color:white;
-    font-size:16px;
+    font-size:15px;
     cursor:pointer;
 }
 
 button:hover {
-    background:#574fd6;
+    background:#111;
 }
 
 /* 링크 */
 .link {
     margin-top:15px;
-    font-size:14px;
+    font-size:13px;
+    color:#555;
 }
 </style>
 </head>
@@ -75,13 +91,14 @@ button:hover {
 
 <div class="wrapper">
 
-    <!-- 🔥 로고 -->
+    <!-- 🔥 로고 (달력 + 풀 컨셉) -->
     <div class="logo">
-        DayJeong
+        📅🌿 DayJeong
+        <div class="sub">your calm schedule</div>
     </div>
 
     <div class="login-box">
-        <h2>🔐 로그인</h2>
+        <h2>로그인</h2>
 
         <form method="POST">
             {% csrf_token %}
