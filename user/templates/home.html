@@ -24,7 +24,7 @@ h2 {
     margin-bottom:10px;
 }
 
-/* 일정 */
+/* 일정 박스 */
 .schedule-box {
     padding:15px;
     border-radius:10px;
@@ -38,19 +38,20 @@ h2 {
 .미확정 { background:orange; }
 .없음 { background:#ccc; color:black; }
 
-/* 연락망 (텍스트형) */
-.contact-text {
-    margin-top:20px;
+/* footer */
+footer {
+    margin-top:30px;
     text-align:center;
     color:#666;
+    font-size:14px;
 }
 
-.contact-text a {
+footer a {
     text-decoration:none;
     color:#666;
 }
 
-.contact-text a:hover {
+footer a:hover {
     text-decoration:underline;
     color:#000;
 }
@@ -83,11 +84,22 @@ h2 {
 <h2>📅 오늘의 일정</h2>
 <div id="today-schedule"></div>
 
-<!-- 연락망 (텍스트 링크형) -->
-<div class="contact-text">
-    <p>📧 <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
-    <p>📸 <a href="https://instagram.com/dayjeong.app" target="_blank">@dayjeong.app</a></p>
-</div>
+<!-- ✅ 연락망 footer -->
+<footer>
+    <p>
+        Contact:
+        <a href="mailto:dayjeong.app@gmail.com">
+            dayjeong.app@gmail.com
+        </a>
+    </p>
+
+    <p>
+        Instagram:
+        <a href="https://www.instagram.com/dayjeong.app/" target="_blank">
+            @dayjeong.app
+        </a>
+    </p>
+</footer>
 
 </div>
 
