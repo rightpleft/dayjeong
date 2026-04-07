@@ -7,7 +7,7 @@
 <style>
 body { font-family: Arial; padding:20px; background:#f5f6fa; }
 
-/* 상단 월 이동 */
+/* 상단 */
 .header {
     display:flex;
     justify-content:space-between;
@@ -110,95 +110,121 @@ body { font-family: Arial; padding:20px; background:#f5f6fa; }
 </div>
 
 <script>
-let selected=null;
-let now=new Date();
+let selected = null;
+
+/* ⭐ 핵심 수정: 항상 1일 기준 */
+let now = new Date();
+now.setDate(1);
 
 function key(){
     return `cal-${now.getFullYear()}-${now.getMonth()}`;
 }
 
 function loadCal(){
-    const cal=document.getElementById("calendar");
-    cal.innerHTML="";
+    const cal = document.getElementById("calendar");
+    cal.innerHTML = "";
+
+    const year = now.getFullYear();
+    const month = now.getMonth();
 
     document.getElementById("month").innerText =
-        `${now.getFullYear()}년 ${now.getMonth()+1}월`;
+        `${year}년 ${month+1}월`;
 
-    const saved=JSON.parse(localStorage.getItem(key()))||{};
-    const last=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+    const saved = JSON.parse(localStorage.getItem(key())) || {};
 
-    for(let d=1; d<=last; d++){
-        const div=document.createElement("div");
-        div.className="day";
-        div.innerText=d;
+    /* ⭐ 안전한 lastDay 계산 */
+    const lastDay = new Date(year, month + 1, 0).getDate();
+
+    for(let d = 1; d <= lastDay; d++){
+        const div = document.createElement("div");
+        div.className = "day";
+        div.innerText = d;
 
         if(saved[d]){
-            if(saved[d].length>1) div.classList.add("겹침");
-            else div.classList.add(saved[d][0].status);
+            if(saved[d].length > 1){
+                div.classList.add("겹침");
+            } else {
+                div.classList.add(saved[d][0].status);
+            }
         }
 
-        div.onclick=()=>select(d);
+        div.onclick = () => select(d);
         cal.appendChild(div);
     }
 }
 
 function prevMonth(){
-    now.setMonth(now.getMonth()-1);
+    now.setMonth(now.getMonth() - 1);
+    now.setDate(1); // ⭐ 다시 고정
     loadCal();
 }
 
 function nextMonth(){
-    now.setMonth(now.getMonth()+1);
+    now.setMonth(now.getMonth() + 1);
+    now.setDate(1); // ⭐ 다시 고정
     loadCal();
 }
 
 function select(d){
-    selected=d;
+    selected = d;
     document.getElementById("date").innerText =
         `${now.getMonth()+1}/${d}`;
     loadList();
 }
 
 function loadList(){
-    const saved=JSON.parse(localStorage.getItem(key()))||{};
-    const list=document.getElementById("list");
-    list.innerHTML="";
+    const saved = JSON.parse(localStorage.getItem(key())) || {};
+    const list = document.getElementById("list");
+    list.innerHTML = "";
 
     if(saved[selected]){
         saved[selected].forEach((s,i)=>{
-            const div=document.createElement("div");
-            div.className="schedule-item";
-            div.innerHTML=`${s.title} (${s.status})
-            <button onclick="del(${i})">삭제</button>`;
+            const div = document.createElement("div");
+            div.className = "schedule-item";
+            div.innerHTML = `
+                ${s.title} (${s.status})
+                <button onclick="del(${i})">삭제</button>
+            `;
             list.appendChild(div);
         });
     }
 }
 
 function add(){
-    const title=document.getElementById("title").value;
-    const status=document.getElementById("status").value;
+    const title = document.getElementById("title").value;
+    const status = document.getElementById("status").value;
 
-    if(!selected||!title){ alert("입력해"); return; }
+    if(!selected || !title){
+        alert("입력해!");
+        return;
+    }
 
-    const saved=JSON.parse(localStorage.getItem(key()))||{};
-    if(!saved[selected]) saved[selected]=[];
+    const saved = JSON.parse(localStorage.getItem(key())) || {};
 
-    saved[selected].push({title,status});
+    if(!saved[selected]){
+        saved[selected] = [];
+    }
 
-    localStorage.setItem(key(),JSON.stringify(saved));
+    saved[selected].push({title, status});
+
+    localStorage.setItem(key(), JSON.stringify(saved));
+
+    document.getElementById("title").value = "";
 
     loadCal();
     loadList();
 }
 
 function del(i){
-    const saved=JSON.parse(localStorage.getItem(key()))||{};
+    const saved = JSON.parse(localStorage.getItem(key())) || {};
+
     saved[selected].splice(i,1);
 
-    if(saved[selected].length===0) delete saved[selected];
+    if(saved[selected].length === 0){
+        delete saved[selected];
+    }
 
-    localStorage.setItem(key(),JSON.stringify(saved));
+    localStorage.setItem(key(), JSON.stringify(saved));
 
     loadCal();
     loadList();
