@@ -2,142 +2,138 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>일정 추가</title>
+<title>일정 관리</title>
 
 <style>
-body {
-    font-family: Arial;
-    background:#f5f6fa;
-    margin:0;
+body { font-family: Arial; padding:20px; background:#f5f6fa; }
+
+.calendar {
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap:5px;
+    margin-bottom:20px;
 }
 
-.container {
-    width:700px;
-    margin:50px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    padding-bottom:80px;
-}
-
-h2 {
-    margin-bottom:15px;
-}
-
-input, select, button {
-    width:100%;
+.day {
     padding:10px;
-    margin-top:10px;
+    text-align:center;
     border-radius:5px;
-    border:1px solid #ccc;
+    background:#eee;
+    cursor:pointer;
 }
 
-button {
-    background:#4CAF50;
-    color:white;
-    border:none;
-}
+.확정 { background:#4CAF50; color:white; }
+.겹침 { background:#f44336; color:white; }
+.미확정 { background:orange; color:white; }
 
-/* 상태 설명 */
-.status-info {
-    margin-top:15px;
-    font-size:14px;
-}
-
-.status-info span {
-    margin-right:10px;
-}
-
-.green { color:#4CAF50; }
-.red { color:#f44336; }
-.orange { color:orange; }
-.gray { color:#999; }
-
-/* 하단 네비 */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-}
-
-.bottom-nav a {
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
+.schedule-item {
+    padding:10px;
+    background:white;
+    margin-top:5px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h2>📅 일정 관리</h2>
 
-<h2>📅 일정 추가</h2>
+<div id="calendar" class="calendar"></div>
 
-<input type="date" id="date">
-<input type="text" id="title" placeholder="일정 내용 입력">
+<h3 id="date">날짜 선택</h3>
 
+<input type="text" id="title" placeholder="일정">
 <select id="status">
     <option value="확정">확정</option>
-    <option value="겹침">겹침</option>
     <option value="미확정">미확정</option>
 </select>
 
-<button onclick="saveSchedule()">저장</button>
+<button onclick="add()">추가</button>
 
-<!-- 상태 설명 -->
-<div class="status-info">
-    <span class="green">● 확정</span>
-    <span class="red">● 겹침</span>
-    <span class="orange">● 미확정</span>
-    <span class="gray">● 일정없음</span>
-</div>
-
-</div>
-
-<!-- 하단바 -->
-<div class="bottom-nav">
-    <a href="/">🏠 홈</a>
-    <a href="/add/">📅 일정</a>
-    <a href="/friends/">👥 친구</a>
-    <a href="/settings/">⚙ 설정</a>
-</div>
+<div id="list"></div>
 
 <script>
-function saveSchedule(){
-    const dateInput = document.getElementById("date").value;
-    const title = document.getElementById("title").value;
-    const status = document.getElementById("status").value;
+let selected=null;
+const now=new Date();
+const y=now.getFullYear();
+const m=now.getMonth();
 
-    if(!dateInput || !title){
-        alert("날짜랑 내용 입력해!");
-        return;
+function key(){ return `cal-${y}-${m}`; }
+
+function loadCal(){
+    const cal=document.getElementById("calendar");
+    cal.innerHTML="";
+
+    const saved=JSON.parse(localStorage.getItem(key()))||{};
+    const last=new Date(y,m+1,0).getDate();
+
+    for(let d=1;d<=last;d++){
+        const div=document.createElement("div");
+        div.className="day";
+        div.innerText=d;
+
+        if(saved[d]){
+            if(saved[d].length>1) div.classList.add("겹침");
+            else div.classList.add(saved[d][0].status);
+        }
+
+        div.onclick=()=>select(d);
+        cal.appendChild(div);
     }
-
-    const date = new Date(dateInput);
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    const d = date.getDate();
-
-    const key = `cal-${y}-${m}`;
-    const saved = JSON.parse(localStorage.getItem(key)) || {};
-
-    saved[d] = {
-        title: title,
-        status: status
-    };
-
-    localStorage.setItem(key, JSON.stringify(saved));
-
-    alert("저장 완료!");
-    location.href = "/";
 }
+
+function select(d){
+    selected=d;
+    document.getElementById("date").innerText=`${m+1}/${d}`;
+    loadList();
+}
+
+function loadList(){
+    const saved=JSON.parse(localStorage.getItem(key()))||{};
+    const list=document.getElementById("list");
+    list.innerHTML="";
+
+    if(saved[selected]){
+        saved[selected].forEach((s,i)=>{
+            const div=document.createElement("div");
+            div.className="schedule-item";
+            div.innerHTML=`${s.title} (${s.status})
+            <button onclick="del(${i})">삭제</button>`;
+            list.appendChild(div);
+        });
+    }
+}
+
+function add(){
+    const title=document.getElementById("title").value;
+    const status=document.getElementById("status").value;
+
+    if(!selected||!title){ alert("입력해"); return; }
+
+    const saved=JSON.parse(localStorage.getItem(key()))||{};
+    if(!saved[selected]) saved[selected]=[];
+
+    saved[selected].push({title,status});
+
+    localStorage.setItem(key(),JSON.stringify(saved));
+
+    loadCal();
+    loadList();
+}
+
+function del(i){
+    const saved=JSON.parse(localStorage.getItem(key()))||{};
+    saved[selected].splice(i,1);
+
+    if(saved[selected].length===0) delete saved[selected];
+
+    localStorage.setItem(key(),JSON.stringify(saved));
+
+    loadCal();
+    loadList();
+}
+
+loadCal();
 </script>
 
 </body>

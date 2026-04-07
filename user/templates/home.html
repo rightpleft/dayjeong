@@ -5,42 +5,22 @@
 <title>홈</title>
 
 <style>
-body {
-    font-family: Arial;
-    background:#f5f6fa;
-    margin:0;
-}
+body { font-family: Arial; background:#f5f6fa; margin:0; }
 
-/* 전체 */
-.container {
-    width:700px;
-    margin:50px auto;
-}
+.container { width:700px; margin:50px auto; }
 
-/* 상단 */
 .top-bar {
     display:flex;
     justify-content:space-between;
     margin-bottom:10px;
 }
 
-.profile {
-    font-weight:bold;
-}
-
-.logout a {
-    text-decoration:none;
-    color:#f44336;
-}
-
-/* 카드 */
 .card {
     background:white;
     padding:20px;
     border-radius:10px;
 }
 
-/* 일정 */
 .schedule-box {
     padding:15px;
     border-radius:10px;
@@ -53,46 +33,21 @@ body {
 .미확정 { background:orange; }
 .없음 { background:#ccc; color:black; }
 
-/* 예정된 일정 제목 */
-h3 {
-    margin-top:20px;
-}
-
-/* 연락망 */
 .contact {
     margin-top:20px;
     text-align:center;
     font-size:14px;
-    color:#666;
 }
 
-.contact a {
-    text-decoration:none;
-    color:#666;
-}
-
-.contact a:hover {
-    text-decoration:underline;
-    color:#000;
-}
-
-/* 하단 네비 */
 .bottom-nav {
     position: fixed;
     bottom: 0;
-    left: 0;
     width: 100%;
     background: white;
     border-top: 1px solid #ddd;
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
-}
-
-.bottom-nav a {
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
 }
 </style>
 </head>
@@ -101,81 +56,89 @@ h3 {
 
 <div class="container">
 
-    <!-- 상단 -->
-    <div class="top-bar">
-        <div class="profile">👤 {{ request.user.username }}</div>
-        <div class="logout"><a href="/logout/">로그아웃</a></div>
-    </div>
+<div class="top-bar">
+    <div>👤 {{ request.user.username }}</div>
+    <div><a href="/logout/">로그아웃</a></div>
+</div>
 
-    <!-- 일정 카드 -->
-    <div class="card">
+<div class="card">
+    <h2>📅 오늘의 일정</h2>
+    <div id="today"></div>
 
-        <h2>📅 오늘의 일정</h2>
-        <div id="today-schedule"></div>
+    <h3>📌 예정된 일정</h3>
+    <div id="upcoming"></div>
+</div>
 
-        <h3>📌 예정된 일정</h3>
-        <div id="upcoming-schedule"></div>
-
-    </div>
-
-    <!-- 연락망 -->
-    <div class="contact">
-        <p>📧 <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
-        <p>📸 <a href="https://www.instagram.com/dayjeong.app/" target="_blank">@dayjeong.app</a></p>
-        <p>💬 <a href="https://pf.kakao.com/_wktuX" target="_blank">데이정(DayJeong)</a></p>
-    </div>
+<div class="contact">
+    <p>📧 <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
+    <p>📸 <a href="https://www.instagram.com/dayjeong.app/" target="_blank">@dayjeong.app</a></p>
+    <p>💬 <a href="https://pf.kakao.com/_wktuX" target="_blank">데이정</a></p>
+</div>
 
 </div>
 
-<!-- 하단 네비 -->
 <div class="bottom-nav">
-    <a href="/">🏠 홈</a>
-    <a href="/add/">📅 일정</a>
-    <a href="/friends/">👥 친구</a>
-    <a href="/settings/">⚙ 설정</a>
+    <a href="/">홈</a>
+    <a href="/add/">일정</a>
+    <a href="/friends/">친구</a>
+    <a href="/settings/">설정</a>
 </div>
 
 <script>
-function loadSchedule(){
+function load(){
     const today = new Date();
-    const containerToday = document.getElementById("today-schedule");
-    const containerUpcoming = document.getElementById("upcoming-schedule");
+    const tBox = document.getElementById("today");
+    const uBox = document.getElementById("upcoming");
 
-    for(let i = 0; i <= 6; i++){
-        const date = new Date();
-        date.setDate(today.getDate() + i);
+    tBox.innerHTML = "";
+    uBox.innerHTML = "";
 
-        const y = date.getFullYear();
-        const m = date.getMonth();
-        const d = date.getDate();
+    for(let i=0;i<=6;i++){
+        const d = new Date();
+        d.setDate(today.getDate()+i);
+
+        const y = d.getFullYear();
+        const m = d.getMonth();
+        const day = d.getDate();
 
         const key = `cal-${y}-${m}`;
         const saved = JSON.parse(localStorage.getItem(key)) || {};
+        const schedules = saved[day];
 
-        if(i === 0){
-            if(saved[d]){
-                const box = document.createElement("div");
-                box.className = "schedule-box " + saved[d].status;
-                box.innerText = `오늘 - ${saved[d].title} (${saved[d].status})`;
-                containerToday.appendChild(box);
-            } else {
-                const box = document.createElement("div");
-                box.className = "schedule-box 없음";
-                box.innerText = "오늘의 일정 없음";
-                containerToday.appendChild(box);
-            }
+        if(i===0){
+            render(tBox, schedules, true);
         } else {
-            if(saved[d]){
-                const box = document.createElement("div");
-                box.className = "schedule-box " + saved[d].status;
-                box.innerText = `${m+1}/${d} - ${saved[d].title} (${saved[d].status})`;
-                containerUpcoming.appendChild(box);
-            }
+            render(uBox, schedules, false, d);
         }
     }
 }
 
-loadSchedule();
+function render(box, schedules, isToday, date=null){
+    if(!schedules){
+        if(isToday){
+            const div = document.createElement("div");
+            div.className="schedule-box 없음";
+            div.innerText="오늘 일정 없음";
+            box.appendChild(div);
+        }
+        return;
+    }
+
+    let status = schedules.length>1 ? "겹침" : schedules[0].status;
+
+    const div = document.createElement("div");
+    div.className="schedule-box "+status;
+
+    let text = isToday ? "오늘 - " : `${date.getMonth()+1}/${date.getDate()} - `;
+
+    schedules.forEach(s=> text+=s.title+" ");
+    text+=`(${status})`;
+
+    div.innerText=text;
+    box.appendChild(div);
+}
+
+load();
 </script>
 
 </body>
