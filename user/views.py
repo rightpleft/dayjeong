@@ -57,3 +57,6 @@ def add_schedule(request):
         return redirect('/')
 
     return render(request, 'add_schedule.html')
+
+def coming(request):
+    return render(request, 'coming.html')
