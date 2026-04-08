@@ -97,6 +97,7 @@ def add_schedule(request):
         return redirect('/')
 
     return render(request, 'add_schedule.html', {
+        'username': request.user.username,
         'calendar': cal,
         'year': year,
         'month': month,

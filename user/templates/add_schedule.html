@@ -132,6 +132,7 @@ let selected = null;
 /* ⭐ 핵심: 항상 1일 기준 */
 let now = new Date();
 now.setDate(1);
+const username = "{{ username }}"
 
 function key(){
     return `cal-${now.getFullYear()}-${now.getMonth()}`;
