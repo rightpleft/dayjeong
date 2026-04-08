@@ -8,7 +8,7 @@
 body {
     margin:0;
     font-family: Arial;
-    background:#f0f0f0; /* 회색 배경 */
+    background:#f0f0f0;
     height:100vh;
     display:flex;
     justify-content:center;
@@ -25,7 +25,7 @@ body {
     font-size:44px;
     font-weight:bold;
     color:#222;
-    margin-bottom:25px;
+    margin-bottom:10px;
     letter-spacing:2px;
 }
 
@@ -33,7 +33,7 @@ body {
 .sub {
     font-size:12px;
     color:#777;
-    margin-top:5px;
+    margin-bottom:25px;
 }
 
 /* 카드 */
@@ -59,6 +59,7 @@ input {
     border-radius:8px;
     border:1px solid #ccc;
     font-size:14px;
+    box-sizing:border-box; /* 🔥 핵심 (중앙 정렬 해결) */
 }
 
 /* 버튼 */
@@ -91,10 +92,12 @@ button:hover {
 
 <div class="wrapper">
 
-    <!-- 🔥 로고 (달력 + 풀 컨셉) -->
+    <!-- 로고 -->
     <div class="logo">
         📅🌿 DayJeong
-        <div class="sub">우리의 일정, 우리의 데이정</div>
+    </div>
+    <div class="sub">
+        우리의 일정, 우리의 데이정
     </div>
 
     <div class="login-box">
