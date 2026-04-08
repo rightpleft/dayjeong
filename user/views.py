@@ -103,5 +103,72 @@ def add_schedule(request):
         'month': month,
     })
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from .models import Friend, Schedule
+from datetime import date
+
+# 친구 목록
+def friends(request):
+    friends = Friend.objects.filter(user=request.user, blocked=False)
+    return render(request, 'friends.html', {'friends': friends})
+
+# 친구 추가
+def add_friend(request):
+    username = request.POST.get("username")
+
+    try:
+        friend_user = User.objects.get(username=username)
+
+        if friend_user != request.user:
+            Friend.objects.get_or_create(
+                user=request.user,
+                friend=friend_user
+            )
+    except:
+        pass
+
+    return redirect('/friends/')
+
+# 친구 삭제
+def delete_friend(request, id):
+    Friend.objects.filter(id=id, user=request.user).delete()
+    return redirect('/friends/')
+
+# 친구 차단
+def block_friend(request, id):
+    f = Friend.objects.get(id=id, user=request.user)
+    f.blocked = True
+    f.save()
+    return redirect('/friends/')
+
+# 친구 캘린더 보기
+def friend_calendar(request, user_id):
+    friend = User.objects.get(id=user_id)
+    schedules = Schedule.objects.filter(user=friend)
+
+    return render(request, 'friend_calendar.html', {
+        'friend': friend,
+        'schedules': schedules
+    })
+
+# 일정 추가 (DB 저장)
+def add_schedule(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        status = request.POST.get("status")
+        date_str = request.POST.get("date")
+
+        Schedule.objects.create(
+            user=request.user,
+            title=title,
+            status=status,
+            date=date_str
+        )
+
+        return redirect('/')
+
+    return render(request, 'add_schedule.html')
+
 def coming(request):
     return render(request, 'coming.html')

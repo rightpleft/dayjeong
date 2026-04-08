@@ -1,0 +1,19 @@
+<h2>👥 친구 목록</h2>
+
+<form method="POST" action="/add-friend/">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="아이디 검색">
+    <button type="submit">추가</button>
+</form>
+
+<hr>
+
+{% for f in friends %}
+    <div>
+        {{ f.friend.username }}
+
+        <a href="/friend/{{ f.friend.id }}/">캘린더 보기</a>
+        <a href="/delete-friend/{{ f.id }}/">삭제</a>
+        <a href="/block-friend/{{ f.id }}/">차단</a>
+    </div>
+{% endfor %}

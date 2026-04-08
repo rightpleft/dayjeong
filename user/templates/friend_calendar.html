@@ -1,0 +1,7 @@
+<h2>{{ friend.username }}의 일정</h2>
+
+{% for s in schedules %}
+    <div>
+        {{ s.date }} - {{ s.title }} ({{ s.status }})
+    </div>
+{% endfor %}
