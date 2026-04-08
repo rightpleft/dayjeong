@@ -5,7 +5,11 @@
 <title>일정 관리</title>
 
 <style>
-body { font-family: Arial; padding:20px; background:#f5f6fa; }
+body {
+    font-family: Arial;
+    padding:20px;
+    background:#f5f6fa;
+}
 
 /* 상단 */
 .header {
@@ -15,14 +19,20 @@ body { font-family: Arial; padding:20px; background:#f5f6fa; }
     margin-bottom:10px;
 }
 
-/* 캘린더 */
+/* 요일 + 캘린더 공통 */
 .calendar {
     display:grid;
     grid-template-columns: repeat(7, 1fr);
     gap:5px;
-    margin-bottom:20px;
 }
 
+/* 요일 */
+.weekday {
+    text-align:center;
+    font-weight:bold;
+}
+
+/* 날짜 */
 .day {
     padding:10px;
     text-align:center;
@@ -38,12 +48,8 @@ body { font-family: Arial; padding:20px; background:#f5f6fa; }
 
 /* 상태 설명 */
 .legend {
-    margin-bottom:15px;
+    margin-top:15px;
     font-size:14px;
-}
-
-.legend span {
-    margin-right:10px;
 }
 
 /* 리스트 */
@@ -79,15 +85,26 @@ body { font-family: Arial; padding:20px; background:#f5f6fa; }
     <button onclick="nextMonth()">▶</button>
 </div>
 
+<!-- 요일 -->
+<div class="calendar">
+    <div class="weekday">월</div>
+    <div class="weekday">화</div>
+    <div class="weekday">수</div>
+    <div class="weekday">목</div>
+    <div class="weekday">금</div>
+    <div class="weekday">토</div>
+    <div class="weekday">일</div>
+</div>
+
+<!-- 캘린더 -->
+<div id="calendar" class="calendar"></div>
+
 <!-- 상태 설명 -->
 <div class="legend">
     <span style="color:#4CAF50;">● 확정</span>
     <span style="color:orange;">● 미확정</span>
     <span style="color:#f44336;">● 겹침</span>
 </div>
-
-<!-- 캘린더 -->
-<div id="calendar" class="calendar"></div>
 
 <h3 id="date">날짜 선택</h3>
 
@@ -112,7 +129,7 @@ body { font-family: Arial; padding:20px; background:#f5f6fa; }
 <script>
 let selected = null;
 
-/* ⭐ 핵심 수정: 항상 1일 기준 */
+/* ⭐ 핵심: 항상 1일 기준 */
 let now = new Date();
 now.setDate(1);
 
@@ -132,16 +149,18 @@ function loadCal(){
 
     const saved = JSON.parse(localStorage.getItem(key())) || {};
 
-    const firstDay = new Date(year, month, 1).getDay(); // ⭐ 시작 요일
+    const firstDay = new Date(year, month, 1).getDay();
     const lastDay = new Date(year, month + 1, 0).getDate();
 
-    // ⭐ 빈칸 먼저 채우기 (중요)
-    for(let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++){
+    // ⭐ 시작 요일 맞추기 (월요일 시작)
+    let start = firstDay === 0 ? 6 : firstDay - 1;
+
+    for(let i = 0; i < start; i++){
         const empty = document.createElement("div");
         cal.appendChild(empty);
     }
 
-    // 날짜 채우기
+    // ⭐ 전체 날짜 생성 (절대 today 쓰지 않음)
     for(let d = 1; d <= lastDay; d++){
         const div = document.createElement("div");
         div.className = "day";
@@ -162,13 +181,13 @@ function loadCal(){
 
 function prevMonth(){
     now.setMonth(now.getMonth() - 1);
-    now.setDate(1); // ⭐ 다시 고정
+    now.setDate(1);
     loadCal();
 }
 
 function nextMonth(){
     now.setMonth(now.getMonth() + 1);
-    now.setDate(1); // ⭐ 다시 고정
+    now.setDate(1);
     loadCal();
 }
 
