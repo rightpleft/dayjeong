@@ -15,12 +15,10 @@ body {
     align-items:center;
 }
 
-/* 전체 */
 .wrapper {
     text-align:center;
 }
 
-/* 로고 */
 .logo {
     font-size:44px;
     font-weight:bold;
@@ -29,14 +27,12 @@ body {
     letter-spacing:2px;
 }
 
-/* 서브텍스트 */
 .sub {
     font-size:12px;
     color:#777;
     margin-top:5px;
 }
 
-/* 카드 */
 .signup-box {
     background:white;
     padding:40px;
@@ -45,13 +41,11 @@ body {
     box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
-/* 제목 */
 h2 {
     margin-bottom:20px;
     color:#333;
 }
 
-/* input */
 input {
     width:100%;
     padding:12px;
@@ -62,7 +56,6 @@ input {
     box-sizing:border-box;
 }
 
-/* 버튼 */
 button {
     width:100%;
     padding:12px;
@@ -79,11 +72,16 @@ button:hover {
     background:#111;
 }
 
-/* 링크 */
 .link {
     margin-top:15px;
     font-size:13px;
     color:#555;
+}
+
+.error {
+    color:red;
+    font-size:13px;
+    margin-bottom:10px;
 }
 </style>
 </head>
@@ -92,7 +90,6 @@ button:hover {
 
 <div class="wrapper">
 
-    <!-- 로고 -->
     <div class="logo">
         📅🌿 DayJeong
         <div class="sub">우리의 일정, 우리의 데이정</div>
@@ -101,10 +98,15 @@ button:hover {
     <div class="signup-box">
         <h2>회원가입</h2>
 
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             <input type="text" name="username" placeholder="아이디" required>
             <input type="password" name="password" placeholder="비밀번호" required>
+            <input type="password" name="password2" placeholder="비밀번호 확인" required>
             <button type="submit">회원가입</button>
         </form>
 

@@ -23,22 +23,47 @@ def login_view(request):
     return render(request, 'login.html')
 
 # 📝 회원가입
-def signup_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import login
 
-        if User.objects.filter(username=username).exists():
-            return render(request, 'signup.html', {
-                'error': '이미 존재하는 아이디입니다'
+def signup_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        password2 = request.POST.get("password2")
+
+        # ✅ 1. username 체크
+        if not username:
+            return render(request, "signup.html", {
+                "error": "아이디를 입력해주세요"
             })
 
-        user = User.objects.create_user(username=username, password=password)
+        # ✅ 2. 비밀번호 확인
+        if password != password2:
+            return render(request, "signup.html", {
+                "error": "비밀번호가 다릅니다"
+            })
+
+        # ✅ 3. 중복 체크
+        if User.objects.filter(username=username).exists():
+            return render(request, "signup.html", {
+                "error": "이미 존재하는 아이디입니다"
+            })
+
+        # ✅ 4. 유저 생성
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+
+        # ✅ 5. 자동 로그인 🔥
         login(request, user)
 
+        # ✅ 6. 홈 이동
         return redirect('/')
 
-    return render(request, 'signup.html')
+    return render(request, "signup.html")
 
 # 🚪 로그아웃
 def logout_view(request):
