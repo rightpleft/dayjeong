@@ -132,9 +132,16 @@ function loadCal(){
 
     const saved = JSON.parse(localStorage.getItem(key())) || {};
 
-    /* ⭐ 안전한 lastDay 계산 */
+    const firstDay = new Date(year, month, 1).getDay(); // ⭐ 시작 요일
     const lastDay = new Date(year, month + 1, 0).getDate();
 
+    // ⭐ 빈칸 먼저 채우기 (중요)
+    for(let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++){
+        const empty = document.createElement("div");
+        cal.appendChild(empty);
+    }
+
+    // 날짜 채우기
     for(let d = 1; d <= lastDay; d++){
         const div = document.createElement("div");
         div.className = "day";

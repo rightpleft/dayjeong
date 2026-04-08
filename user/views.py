@@ -75,13 +75,32 @@ def home(request):
     return render(request, 'home.html')
 
 # ➕ 일정 추가
+import calendar
+from datetime import date
+
 def add_schedule(request):
+    today = date.today()
+    year = today.year
+    month = today.month
+
+    # 🔥 달력 생성
+    cal = calendar.monthcalendar(year, month)
+
+    # 🔥 일정 저장 처리
     if request.method == 'POST':
         title = request.POST.get('title')
+        selected_date = request.POST.get('date')
+
+        print("날짜:", selected_date)
         print("일정:", title)
+
         return redirect('/')
 
-    return render(request, 'add_schedule.html')
+    return render(request, 'add_schedule.html', {
+        'calendar': cal,
+        'year': year,
+        'month': month,
+    })
 
 def coming(request):
     return render(request, 'coming.html')
