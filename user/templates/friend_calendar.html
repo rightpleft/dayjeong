@@ -1,4 +1,37 @@
-<div id="calendar" style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px;"></div>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>친구 캘린더</title>
+
+<style>
+body { font-family: Arial; padding:20px; }
+
+.calendar {
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day {
+    padding:10px;
+    background:#eee;
+    text-align:center;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔙 뒤로가기 -->
+<a href="/friends/" style="display:inline-block; margin-bottom:10px;">
+    ← 친구 목록으로
+</a>
+
+<h2>{{ friend.username }}의 캘린더</h2>
+
+<div id="calendar" class="calendar"></div>
 
 <script>
 let now = new Date();
@@ -11,7 +44,7 @@ function loadCal(){
     const year = now.getFullYear();
     const month = now.getMonth();
 
-    // 요일 헤더
+    // 요일
     const days = ["일","월","화","수","목","금","토"];
     days.forEach(d=>{
         const div = document.createElement("div");
@@ -31,10 +64,8 @@ function loadCal(){
     // 날짜
     for(let d=1; d<=lastDate; d++){
         const div = document.createElement("div");
+        div.className = "day";
         div.innerText = d;
-        div.style.padding = "10px";
-        div.style.background = "#eee";
-        div.style.cursor = "pointer";
 
         div.onclick = () => sendRequest(`${year}-${month+1}-${d}`);
 
@@ -62,3 +93,6 @@ function sendRequest(date){
 
 loadCal();
 </script>
+
+</body>
+</html>

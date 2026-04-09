@@ -77,6 +77,24 @@ h2 {
 .actions a:hover {
     opacity:0.8;
 }
+
+/* 하단 네비 */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+body {
+    padding-bottom: 70px;
+}
+
 </style>
 </head>
 
@@ -106,6 +124,12 @@ h2 {
     <p>친구 없음</p>
 {% endfor %}
 
+<!-- 하단 네비 -->
+<div class="bottom-nav">
+    <a href="/">🏠 홈</a>
+    <a href="/add/">📅 일정</a>
+    <a href="/friends/">👥 친구</a>
+    <a href="/settings/">⚙ 설정</a>
 </div>
 
 </body>
