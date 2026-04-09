@@ -105,52 +105,68 @@ def add_schedule(request):
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Friend, Schedule
-from datetime import date
+from django.contrib.auth.decorators import login_required
+from .models import Friend
 
 # 친구 목록
+@login_required
 def friends(request):
-    friends = Friend.objects.filter(user=request.user, blocked=False)
+    friends = Friend.objects.filter(
+        from_user=request.user,
+        status='accepted'
+    )
     return render(request, 'friends.html', {'friends': friends})
 
-# 친구 추가
-def add_friend(request):
+# 친구 요청 보내기
+@login_required
+def send_request(request):
     username = request.POST.get("username")
 
     try:
-        friend_user = User.objects.get(username=username)
+        to_user = User.objects.get(username=username)
 
-        if friend_user != request.user:
+        if to_user != request.user:
             Friend.objects.get_or_create(
-                user=request.user,
-                friend=friend_user
+                from_user=request.user,
+                to_user=to_user,
+                status='pending'
             )
     except:
         pass
 
     return redirect('/friends/')
 
-# 친구 삭제
-def delete_friend(request, id):
-    Friend.objects.filter(id=id, user=request.user).delete()
-    return redirect('/friends/')
+# 받은 요청 목록
+@login_required
+def friend_requests(request):
+    requests = Friend.objects.filter(
+        to_user=request.user,
+        status='pending'
+    )
+    return render(request, 'friend_requests.html', {'requests': requests})
 
-# 친구 차단
-def block_friend(request, id):
-    f = Friend.objects.get(id=id, user=request.user)
-    f.blocked = True
+# 요청 수락
+@login_required
+def accept_request(request, id):
+    f = Friend.objects.get(id=id, to_user=request.user)
+
+    f.status = 'accepted'
     f.save()
+
+    # 양방향 친구 생성
+    Friend.objects.get_or_create(
+        from_user=request.user,
+        to_user=f.from_user,
+        status='accepted'
+    )
+
     return redirect('/friends/')
 
-# 친구 캘린더 보기
-def friend_calendar(request, user_id):
-    friend = User.objects.get(id=user_id)
-    schedules = Schedule.objects.filter(user=friend)
-
-    return render(request, 'friend_calendar.html', {
-        'friend': friend,
-        'schedules': schedules
-    })
+# 요청 거절
+@login_required
+def reject_request(request, id):
+    Friend.objects.filter(id=id, to_user=request.user).delete()
+    return redirect('/friends/')
 
 # 일정 추가 (DB 저장)
 def add_schedule(request):

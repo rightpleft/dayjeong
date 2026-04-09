@@ -10,7 +10,9 @@ urlpatterns = [
     path('settings/', views.coming),
     path('friends/', views.friends),
     path('add-friend/', views.add_friend),
-    path('delete-friend/<int:id>/', views.delete_friend),
-    path('block-friend/<int:id>/', views.block_friend),
-    path('friend/<int:user_id>/', views.friend_calendar),
+    path('friends/', views.friends),
+    path('send-request/', views.send_request),
+    path('requests/', views.friend_requests),
+    path('accept/<int:id>/', views.accept_request),
+    path('reject/<int:id>/', views.reject_request),
 ]
