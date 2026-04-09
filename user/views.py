@@ -262,5 +262,13 @@ def reject_schedule(request, id):
     ScheduleRequest.objects.filter(id=id).update(status='rejected')
     return redirect('/schedule-requests/')
 
+@login_required
+def friends(request):
+    friends = Friend.objects.filter(
+        from_user=request.user,
+        status='accepted'
+    )
+    return render(request, 'friends.html', {'friends': friends})
+
 def coming(request):
     return render(request, 'coming.html')
