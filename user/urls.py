@@ -9,7 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view),
     path('settings/', views.coming),
     path('friends/', views.friends),
-    path('add-friend/', views.add_friend),
+    path('add-friend/', views.send_request),
     path('friends/', views.friends),
     path('send-request/', views.send_request),
     path('requests/', views.friend_requests),
