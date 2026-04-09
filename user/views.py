@@ -272,3 +272,14 @@ def friends(request):
 
 def coming(request):
     return render(request, 'coming.html')
+
+@login_required
+def add_schedule(request):
+    count = ScheduleRequest.objects.filter(
+        to_user=request.user,
+        status='pending'
+    ).count()
+
+    return render(request, 'add_schedule.html', {
+        'request_count': count
+    })

@@ -9,6 +9,7 @@ body {
     font-family: Arial;
     padding:20px;
     background:#f5f6fa;
+    padding-bottom: 80px; /* 하단바 + 버튼 공간 */
 }
 
 /* 상단 */
@@ -19,20 +20,14 @@ body {
     margin-bottom:10px;
 }
 
-/* 요일 + 캘린더 공통 */
+/* 캘린더 */
 .calendar {
     display:grid;
     grid-template-columns: repeat(7, 1fr);
     gap:5px;
+    margin-bottom:20px;
 }
 
-/* 요일 */
-.weekday {
-    text-align:center;
-    font-weight:bold;
-}
-
-/* 날짜 */
 .day {
     padding:10px;
     text-align:center;
@@ -48,7 +43,7 @@ body {
 
 /* 상태 설명 */
 .legend {
-    margin-top:15px;
+    margin-bottom:15px;
     font-size:14px;
 }
 
@@ -71,6 +66,36 @@ body {
     justify-content: space-around;
     padding: 10px 0;
 }
+
+/* 🔥 플로팅 버튼 */
+.floating-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+
+    padding: 12px 16px;
+    background: #4CAF50;
+    color: white;
+
+    border-radius: 25px;
+    font-size: 14px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 🔴 요청 개수 */
+.badge {
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 7px;
+    font-size: 12px;
+}
 </style>
 </head>
 
@@ -85,26 +110,15 @@ body {
     <button onclick="nextMonth()">▶</button>
 </div>
 
-<!-- 요일 -->
-<div class="calendar">
-    <div class="weekday">월</div>
-    <div class="weekday">화</div>
-    <div class="weekday">수</div>
-    <div class="weekday">목</div>
-    <div class="weekday">금</div>
-    <div class="weekday">토</div>
-    <div class="weekday">일</div>
-</div>
-
-<!-- 캘린더 -->
-<div id="calendar" class="calendar"></div>
-
 <!-- 상태 설명 -->
 <div class="legend">
     <span style="color:#4CAF50;">● 확정</span>
     <span style="color:orange;">● 미확정</span>
     <span style="color:#f44336;">● 겹침</span>
 </div>
+
+<!-- 캘린더 -->
+<div id="calendar" class="calendar"></div>
 
 <h3 id="date">날짜 선택</h3>
 
@@ -118,6 +132,14 @@ body {
 
 <div id="list"></div>
 
+<!-- 🔥 일정 요청 버튼 -->
+<a href="/schedule-requests/" class="floating-btn">
+    📨 일정 요청
+    {% if request_count > 0 %}
+        <span class="badge">{{ request_count }}</span>
+    {% endif %}
+</a>
+
 <!-- 하단 네비 -->
 <div class="bottom-nav">
     <a href="/">🏠 홈</a>
@@ -128,11 +150,8 @@ body {
 
 <script>
 let selected = null;
-
-/* ⭐ 핵심: 항상 1일 기준 */
 let now = new Date();
 now.setDate(1);
-const username = "{{ username }}"
 
 function key(){
     return `cal-${now.getFullYear()}-${now.getMonth()}`;
@@ -151,18 +170,24 @@ function loadCal(){
     const saved = JSON.parse(localStorage.getItem(key())) || {};
 
     const firstDay = new Date(year, month, 1).getDay();
-    const lastDay = new Date(year, month + 1, 0).getDate();
+    const lastDay = new Date(year, month+1, 0).getDate();
 
-    // ⭐ 시작 요일 맞추기 (월요일 시작)
-    let start = firstDay === 0 ? 6 : firstDay - 1;
+    // 요일
+    const days = ["일","월","화","수","목","금","토"];
+    days.forEach(d=>{
+        const div = document.createElement("div");
+        div.innerText = d;
+        div.style.fontWeight = "bold";
+        cal.appendChild(div);
+    });
 
-    for(let i = 0; i < start; i++){
-        const empty = document.createElement("div");
-        cal.appendChild(empty);
+    // 빈칸
+    for(let i=0; i<firstDay; i++){
+        cal.appendChild(document.createElement("div"));
     }
 
-    // ⭐ 전체 날짜 생성 (절대 today 쓰지 않음)
-    for(let d = 1; d <= lastDay; d++){
+    // 날짜
+    for(let d=1; d<=lastDay; d++){
         const div = document.createElement("div");
         div.className = "day";
         div.innerText = d;
