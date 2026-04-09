@@ -1,7 +1,31 @@
-<h2>{{ friend.username }}의 일정</h2>
+<h2>{{ friend.username }}의 캘린더</h2>
 
-{% for s in schedules %}
-    <div>
-        {{ s.date }} - {{ s.title }} ({{ s.status }})
-    </div>
-{% endfor %}
+<div id="calendar"></div>
+
+<script>
+function sendRequest(date){
+    if(confirm(date + " 일정 요청할까요?")){
+        fetch("/send-schedule-request/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                date: date,
+                to_user: "{{ friend.id }}"
+            })
+        }).then(() => {
+            alert("요청 보냄!");
+        });
+    }
+}
+
+/* 예시 캘린더 (간단 버전) */
+for(let i=1; i<=30; i++){
+    const div = document.createElement("div");
+    div.innerText = i;
+    div.onclick = () => sendRequest(`2026-04-${i}`);
+    document.getElementById("calendar").appendChild(div);
+}
+</script>

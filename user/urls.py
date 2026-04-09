@@ -15,4 +15,11 @@ urlpatterns = [
     path('requests/', views.friend_requests),
     path('accept/<int:id>/', views.accept_request),
     path('reject/<int:id>/', views.reject_request),
+     path('friend/<int:user_id>/', views.friend_calendar),
+
+    path('send-schedule-request/', views.send_schedule_request),
+
+    path('schedule-requests/', views.schedule_requests),
+    path('accept-schedule/<int:id>/', views.accept_schedule),
+    path('reject-schedule/<int:id>/', views.reject_schedule),
 ]

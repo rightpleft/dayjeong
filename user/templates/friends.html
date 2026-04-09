@@ -98,7 +98,9 @@ h2 {
 
 {% for f in friends %}
     <div>
-        {{ f.to_user.username }}
+        <a href="/friend/{{ f.to_user.id }}/">
+            {{ f.to_user.username }}
+        </a>
     </div>
 {% empty %}
     <p>친구 없음</p>

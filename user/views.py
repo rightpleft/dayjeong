@@ -107,15 +107,22 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Friend
+from django.http import JsonResponse
+import json
+
+from .models import Friend, Schedule, ScheduleRequest
 
 # 친구 목록
 @login_required
-def friends(request):
-    friends = Friend.objects.filter(
-        from_user=request.user,
-        status='accepted'
-    )
-    return render(request, 'friends.html', {'friends': friends})
+def friend_calendar(request, user_id):
+    friend = User.objects.get(id=user_id)
+
+    schedules = Schedule.objects.filter(user=friend)
+
+    return render(request, 'friend_calendar.html', {
+        'friend': friend,
+        'schedules': schedules
+    })
 
 # 친구 요청 보내기
 @login_required
@@ -185,6 +192,75 @@ def add_schedule(request):
         return redirect('/')
 
     return render(request, 'add_schedule.html')
+
+# 👀 친구 캘린더 보기
+@login_required
+def friend_calendar(request, user_id):
+    friend = User.objects.get(id=user_id)
+
+    schedules = Schedule.objects.filter(user=friend)
+
+    return render(request, 'friend_calendar.html', {
+        'friend': friend,
+        'schedules': schedules
+    })
+
+
+# 📩 일정 요청 보내기
+@login_required
+def send_schedule_request(request):
+    data = json.loads(request.body)
+
+    ScheduleRequest.objects.create(
+        from_user=request.user,
+        to_user_id=data['to_user'],
+        date=data['date'],
+        title="같이 일정"
+    )
+
+    return JsonResponse({'ok': True})
+
+
+# 📬 받은 일정 요청
+@login_required
+def schedule_requests(request):
+    requests = ScheduleRequest.objects.filter(
+        to_user=request.user,
+        status='pending'
+    )
+
+    return render(request, 'schedule_requests.html', {'requests': requests})
+
+
+# ✅ 일정 수락
+@login_required
+def accept_schedule(request, id):
+    r = ScheduleRequest.objects.get(id=id)
+
+    r.status = 'accepted'
+    r.save()
+
+    # 🔥 핵심: 둘 다 일정 생성
+    Schedule.objects.create(
+        user=r.from_user,
+        date=r.date,
+        title=r.title
+    )
+
+    Schedule.objects.create(
+        user=r.to_user,
+        date=r.date,
+        title=r.title
+    )
+
+    return redirect('/schedule-requests/')
+
+
+# ❌ 일정 거절
+@login_required
+def reject_schedule(request, id):
+    ScheduleRequest.objects.filter(id=id).update(status='rejected')
+    return redirect('/schedule-requests/')
 
 def coming(request):
     return render(request, 'coming.html')

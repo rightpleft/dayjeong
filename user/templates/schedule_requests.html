@@ -1,0 +1,12 @@
+<h2>📨 일정 요청</h2>
+
+{% for r in requests %}
+<div>
+    {{ r.from_user.username }} / {{ r.date }}
+
+    <a href="/accept-schedule/{{ r.id }}/">수락</a>
+    <a href="/reject-schedule/{{ r.id }}/">거절</a>
+</div>
+{% empty %}
+<p>요청 없음</p>
+{% endfor %}
