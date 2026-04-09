@@ -1,10 +1,49 @@
-<h2>{{ friend.username }}의 캘린더</h2>
-
-<div id="calendar"></div>
+<div id="calendar" style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px;"></div>
 
 <script>
+let now = new Date();
+now.setDate(1);
+
+function loadCal(){
+    const cal = document.getElementById("calendar");
+    cal.innerHTML = "";
+
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    // 요일 헤더
+    const days = ["일","월","화","수","목","금","토"];
+    days.forEach(d=>{
+        const div = document.createElement("div");
+        div.innerText = d;
+        div.style.fontWeight = "bold";
+        cal.appendChild(div);
+    });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month+1, 0).getDate();
+
+    // 빈칸
+    for(let i=0; i<firstDay; i++){
+        cal.appendChild(document.createElement("div"));
+    }
+
+    // 날짜
+    for(let d=1; d<=lastDate; d++){
+        const div = document.createElement("div");
+        div.innerText = d;
+        div.style.padding = "10px";
+        div.style.background = "#eee";
+        div.style.cursor = "pointer";
+
+        div.onclick = () => sendRequest(`${year}-${month+1}-${d}`);
+
+        cal.appendChild(div);
+    }
+}
+
 function sendRequest(date){
-    if(confirm(date + " 일정 요청할까요?")){
+    if(confirm(date + " 일정을 요청할까요?")){
         fetch("/send-schedule-request/", {
             method: "POST",
             headers: {
@@ -15,17 +54,11 @@ function sendRequest(date){
                 date: date,
                 to_user: "{{ friend.id }}"
             })
-        }).then(() => {
-            alert("요청 보냄!");
+        }).then(()=>{
+            alert("요청 전송 완료!");
         });
     }
 }
 
-/* 예시 캘린더 (간단 버전) */
-for(let i=1; i<=30; i++){
-    const div = document.createElement("div");
-    div.innerText = i;
-    div.onclick = () => sendRequest(`2026-04-${i}`);
-    document.getElementById("calendar").appendChild(div);
-}
+loadCal();
 </script>
