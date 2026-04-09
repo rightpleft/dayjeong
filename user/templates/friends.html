@@ -1,19 +1,118 @@
-<h2>👥 친구 목록</h2>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>친구</title>
 
-<form method="POST" action="/add-friend/">
+<style>
+body {
+    font-family: Arial;
+    background:#f5f6fa;
+    margin:0;
+    padding:20px;
+}
+
+.container {
+    max-width:500px;
+    margin:auto;
+}
+
+/* 제목 */
+h2 {
+    margin-bottom:20px;
+}
+
+/* 검색창 */
+.search-box {
+    display:flex;
+    margin-bottom:20px;
+}
+
+.search-box input {
+    flex:1;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:5px 0 0 5px;
+}
+
+.search-box button {
+    padding:10px 15px;
+    border:none;
+    background:#4CAF50;
+    color:white;
+    border-radius:0 5px 5px 0;
+    cursor:pointer;
+}
+
+/* 친구 카드 */
+.friend-card {
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* 이름 */
+.friend-name {
+    font-weight:bold;
+}
+
+/* 버튼 영역 */
+.actions a {
+    margin-left:8px;
+    text-decoration:none;
+    font-size:12px;
+    padding:5px 8px;
+    border-radius:5px;
+}
+
+/* 버튼 스타일 */
+.view { background:#2196F3; color:white; }
+.delete { background:#999; color:white; }
+.block { background:#f44336; color:white; }
+
+.actions a:hover {
+    opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>👥 친구</h2>
+
+<!-- 친구 추가 -->
+<form method="POST" action="/add-friend/" class="search-box">
     {% csrf_token %}
     <input type="text" name="username" placeholder="아이디 검색">
     <button type="submit">추가</button>
 </form>
 
-<hr>
-
+<!-- 친구 리스트 -->
 {% for f in friends %}
-    <div>
-        {{ f.friend.username }}
+<div class="friend-card">
 
-        <a href="/friend/{{ f.friend.id }}/">캘린더 보기</a>
-        <a href="/delete-friend/{{ f.id }}/">삭제</a>
-        <a href="/block-friend/{{ f.id }}/">차단</a>
+    <div class="friend-name">
+        {{ f.friend.username }}
     </div>
+
+    <div class="actions">
+        <a href="/friend/{{ f.friend.id }}/" class="view">보기</a>
+        <a href="/delete-friend/{{ f.id }}/" class="delete">삭제</a>
+        <a href="/block-friend/{{ f.id }}/" class="block">차단</a>
+    </div>
+
+</div>
+{% empty %}
+<p>친구가 없습니다</p>
 {% endfor %}
+
+</div>
+
+</body>
+</html>
