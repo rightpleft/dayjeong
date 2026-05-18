@@ -45,9 +45,26 @@
 
 <!-- 🔙 상단 바 -->
 <div class="top-bar">
-    <a href="/add/" class="back-btn">📅 일정목록으로</a>
-    <a href="/sent-requests/">📤 보낸 요청</a>
+    <a href="/add/" class="back-btn">←일정목록으로</a>
 </div>
+
+<!-- 📤 보낸 요청 버튼 (우측 하단) -->
+<a href="/sent-requests/" class="floating-btn">
+    📤 보낸 요청
+</a>
+
+<style>
+.floating-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 80px;
+    padding: 12px 16px;
+    background: #2196F3;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+}
+</style>
 
 <h2>📨 일정 요청</h2>
 

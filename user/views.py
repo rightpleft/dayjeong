@@ -296,7 +296,11 @@ def sent_requests(request):
 
 @login_required
 def cancel_request(request, request_id):
-    req = get_object_or_404(ScheduleRequest, id=request_id, from_user=request.user)
+    req = get_object_or_404(
+        ScheduleRequest,
+        id=request_id,
+        from_user=request.user  # 🔥 남의 요청 못 건드리게
+    )
     req.delete()
 
     return redirect('/sent-requests/')
