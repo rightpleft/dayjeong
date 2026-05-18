@@ -7,74 +7,98 @@
     <style>
         body {
             font-family: Arial;
-            margin: 0;
             padding: 20px;
             background: #fafafa;
         }
 
-        /* 상단 바 */
         .top-bar {
-            display: flex;
-            align-items: center;
             margin-bottom: 20px;
         }
 
-        .back-btn {
-            text-decoration: none;
-            color: #333;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-
-        h2 {
-            margin: 0;
-        }
-
-        /* 요청 카드 */
         .req {
             background: white;
             padding: 12px;
             margin-top: 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .ok-btn {
+            background: green;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .no-btn {
+            background: red;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* 📤 보낸 요청 버튼 (우측 하단) */
+        .floating-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            padding: 12px 16px;
+            background: #2196F3;
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
         }
     </style>
 </head>
 
 <body>
 
-<!-- 🔙 상단 바 -->
+<!-- 🔙 상단 -->
 <div class="top-bar">
-    <a href="/add/" class="back-btn">←일정목록으로</a>
+    <a href="/add/">📅 일정목록으로</a>
 </div>
 
-<!-- 📤 보낸 요청 버튼 (우측 하단) -->
-<a href="/sent-requests/" class="floating-btn">
-    📤 보낸 요청
-</a>
-
-<style>
-.floating-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 80px;
-    padding: 12px 16px;
-    background: #2196F3;
-    color: white;
-    border-radius: 25px;
-    text-decoration: none;
-}
-</style>
-
-<h2>📨 일정 요청</h2>
+<h2>📨 받은 일정 요청</h2>
 
 {% for r in requests %}
     <div class="req">
-        {{ r.from_user.username }} - {{ r.date }}
+        <span>{{ r.from_user.username }} - {{ r.date }}</span>
+
+        <div class="btn-group">
+            <!-- ✅ 수락 -->
+            <a href="/accept-request/{{ r.id }}/"
+               class="ok-btn"
+               onclick="return confirm('이 요청을 수락하시겠습니까?')">
+               O
+            </a>
+
+            <!-- ❌ 거절 -->
+            <a href="/reject-request/{{ r.id }}/"
+               class="no-btn"
+               onclick="return confirm('이 요청을 거절하시겠습니까?')">
+               X
+            </a>
+        </div>
     </div>
 {% empty %}
     <p>요청 없음</p>
 {% endfor %}
+
+<!-- 📤 보낸 요청 버튼 -->
+<a href="/sent-requests/" class="floating-btn">
+    📤 보낸 요청
+</a>
 
 </body>
 </html>

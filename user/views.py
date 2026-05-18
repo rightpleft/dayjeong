@@ -305,3 +305,31 @@ def cancel_request(request, request_id):
     req.delete()
 
     return redirect('/sent-requests/')
+
+@login_required
+def accept_request(request, request_id):
+    req = get_object_or_404(ScheduleRequest, id=request_id)
+
+    # 🔥 내 일정 추가
+    Schedule.objects.create(
+        user=request.user,
+        date=req.date
+    )
+
+    # 🔥 상대방 일정도 추가
+    Schedule.objects.create(
+        user=req.from_user,
+        date=req.date
+    )
+
+    # 🔥 요청 삭제
+    req.delete()
+
+    return redirect('/schedule-requests/')
+
+@login_required
+def reject_request(request, request_id):
+    req = get_object_or_404(ScheduleRequest, id=request_id)
+    req.delete()
+
+    return redirect('/schedule-requests/')

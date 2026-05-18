@@ -25,4 +25,6 @@ urlpatterns = [
 
     path('sent-requests/', views.sent_requests),
     path('cancel-request/<int:request_id>/', views.cancel_request),
+    path('accept-request/<int:request_id>/', views.accept_request),
+    path('reject-request/<int:request_id>/', views.reject_request),
 ]
