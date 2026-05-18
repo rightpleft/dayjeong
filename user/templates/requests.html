@@ -1,0 +1,10 @@
+<h2>친구 요청</h2>
+
+{% for r in requests %}
+    <p>
+        {{ r.from_user.username }}
+
+        <a href="/accept-friend/{{ r.id }}/">수락</a>
+        <a href="/reject-friend/{{ r.id }}/">거절</a>
+    </p>
+{% endfor %}

@@ -32,7 +32,16 @@ class ScheduleRequest(models.Model):
         ('rejected', '거절')
     ], default='pending')
 
-#친구 요청
+# 👤 프로필 (친구 저장용)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    friends = models.ManyToManyField(User, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+# 🤝 친구 요청
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_user')
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')

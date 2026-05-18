@@ -12,6 +12,7 @@ body {
     padding:20px;
 }
 
+/* 컨테이너 */
 .container {
     max-width:500px;
     margin:auto;
@@ -71,8 +72,6 @@ h2 {
 
 /* 버튼 스타일 */
 .view { background:#2196F3; color:white; }
-.delete { background:#999; color:white; }
-.block { background:#f44336; color:white; }
 
 .actions a:hover {
     opacity:0.8;
@@ -94,7 +93,6 @@ h2 {
 body {
     padding-bottom: 70px;
 }
-
 </style>
 </head>
 
@@ -102,29 +100,38 @@ body {
 
 <div class="container">
 
-<h2>👥 친구</h2>
+    <h2>👥 친구</h2>
 
-<form method="POST" action="/send-request/">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="아이디 검색">
-    <button type="submit">요청</button>
-</form>
+    <!-- 🔍 친구 추가 -->
+    <form method="POST" action="/send-request/" class="search-box">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="아이디 입력">
+        <button type="submit">요청</button>
+    </form>
 
-<a href="/requests/">📨 친구 요청 보기</a>
-
-<hr>
-
-{% for f in friends %}
-    <div>
-        <a href="/friend/{{ f.to_user.id }}/">
-            {{ f.to_user.username }}
-        </a>
+    <!-- 📩 요청 보기 -->
+    <div style="margin-bottom:20px;">
+        <a href="/requests/">📨 친구 요청 보기</a>
     </div>
-{% empty %}
-    <p>친구 없음</p>
-{% endfor %}
 
-<!-- 하단 네비 -->
+    <hr>
+
+    <!-- 👥 친구 목록 -->
+    {% for f in friends %}
+        <div class="friend-card">
+            <span class="friend-name">{{ f.username }}</span>
+
+            <div class="actions">
+                <a href="/friend/{{ f.id }}/" class="view">보기</a>
+            </div>
+        </div>
+    {% empty %}
+        <p>친구 없음</p>
+    {% endfor %}
+
+</div>
+
+<!-- 🔻 하단 네비 -->
 <div class="bottom-nav">
     <a href="/">🏠 홈</a>
     <a href="/add/">📅 일정</a>
