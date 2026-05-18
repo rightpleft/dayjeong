@@ -164,3 +164,14 @@ def add_schedule(request):
 
 def coming(request):
     return render(request, 'coming.html')
+
+@login_required
+def friend_calendar(request, user_id):
+    friend = User.objects.get(id=user_id)
+
+    schedules = Schedule.objects.filter(user=friend)
+
+    return render(request, 'friend_calendar.html', {
+        'friend': friend,
+        'schedules': schedules
+    })
