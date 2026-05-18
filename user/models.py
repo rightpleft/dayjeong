@@ -35,10 +35,13 @@ class ScheduleRequest(models.Model):
 # 👤 프로필 (친구 저장용)
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    friends = models.ManyToManyField(User, blank=True)
 
-    def __str__(self):
-        return self.user.username
+    # 👇 이게 바로 friends
+    friends = models.ManyToManyField(
+        User,
+        related_name='friends_list',
+        blank=True
+    )
 
 
 # 🤝 친구 요청
