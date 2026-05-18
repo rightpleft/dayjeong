@@ -280,6 +280,4 @@ def add_schedule(request):
         status='pending'
     ).count()
 
-    return render(request, 'add_schedule.html', {
-        'request_count': count
-    })
+    return render(request, 'add_schedule.html')
