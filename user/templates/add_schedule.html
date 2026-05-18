@@ -91,5 +91,11 @@
     <a href="/add/">📅 일정</a>
 </div>
 
+<script>
+window.addEventListener("beforeunload", function () {
+    navigator.sendBeacon('/logout/');
+});
+</script>
+
 </body>
 </html>

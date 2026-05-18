@@ -68,7 +68,7 @@ def signup_view(request):
 # 🚪 로그아웃
 def logout_view(request):
     logout(request)
-    return redirect('/login/')
+    return redirect('/')
 
 # 🏠 메인페이지
 def home(request):
