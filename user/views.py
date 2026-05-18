@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 # 🔐 로그인
 def login_view(request):
@@ -185,6 +185,14 @@ def accept_friend(request, request_id):
 @login_required
 def reject_request(request, id):
     Friend.objects.filter(id=id, to_user=request.user).delete()
+    return redirect('/friends/')
+
+def reject_friend(request, request_id):
+    req = get_object_or_404(FriendRequest, id=request_id)
+
+    # 요청만 삭제 (친구 추가 X)
+    req.delete()
+
     return redirect('/friends/')
 
 # 일정 추가 (DB 저장)
