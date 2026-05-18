@@ -1,64 +1,83 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>일정 요청</title>
+<meta charset="UTF-8">
+<title>받은 일정 요청</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            padding: 20px;
-            background: #fafafa;
-        }
+<style>
+body {
+    font-family: Arial;
+    padding: 20px;
+    background: #f5f6fa;
+}
 
-        .top-bar {
-            margin-bottom: 20px;
-        }
+/* 상단 */
+.top-bar {
+    margin-bottom: 20px;
+}
 
-        .req {
-            background: white;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* 요청 카드 */
+.req {
+    background: white;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .btn-group {
-            display: flex;
-            gap: 6px;
-        }
+/* 정보 */
+.info {
+    font-weight: bold;
+}
 
-        .ok-btn {
-            background: green;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+/* 버튼 영역 */
+.actions a {
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-left: 5px;
+}
 
-        .no-btn {
-            background: red;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+/* 버튼 스타일 */
+.accept {
+    background: #4CAF50;
+    color: white;
+}
 
-        .floating-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 80px;
-            padding: 12px 16px;
-            background: #2196F3;
-            color: white;
-            border-radius: 25px;
-            text-decoration: none;
-        }
-    </style>
+.reject {
+    background: #f44336;
+    color: white;
+}
+
+.actions a:hover {
+    opacity: 0.8;
+}
+
+/* 🔥 우측 하단 버튼 */
+.floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 22px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.floating-btn:hover {
+    background: #45a049;
+}
+</style>
 </head>
 
 <body>
@@ -68,35 +87,33 @@
     <a href="/add/">📅 일정목록으로</a>
 </div>
 
-<h2>📨 받은 일정 요청</h2>
+<h2>📬 받은 일정 요청</h2>
 
+<!-- 📋 요청 리스트 -->
 {% for r in requests %}
     <div class="req">
-        <span>{{ r.from_user.username }} - {{ r.date }}</span>
+        <span class="info">
+            {{ r.from_user.username }} - {{ r.date }}
+        </span>
 
-        <div class="btn-group">
-            <!-- ✅ 수락 -->
-            <a href="/accept-request/{{ r.id }}/"
-               class="ok-btn"
-               onclick="return confirm('이 요청을 수락하시겠습니까?')">
-               O
-            </a>
+        <div class="actions">
+            <!-- ✅ 반드시 이 URL -->
+            <a href="/accept-schedule/{{ r.id }}/"
+               class="accept"
+               onclick="return confirm('수락하시겠습니까?')">O</a>
 
-            <!-- ❌ 거절 -->
-            <a href="/reject-request/{{ r.id }}/"
-               class="no-btn"
-               onclick="return confirm('이 요청을 거절하시겠습니까?')">
-               X
-            </a>
+            <a href="/reject-schedule/{{ r.id }}/"
+               class="reject"
+               onclick="return confirm('거절하시겠습니까?')">X</a>
         </div>
     </div>
 {% empty %}
-    <p>요청 없음</p>
+    <p>받은 요청 없음</p>
 {% endfor %}
 
-<!-- 📤 보낸 요청 -->
+<!-- 🔥 우측 하단: 보낸 요청 버튼 -->
 <a href="/sent-requests/" class="floating-btn">
-    📤 보낸 요청
+    📤
 </a>
 
 </body>
