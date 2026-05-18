@@ -172,9 +172,12 @@ def accept_request(request, id):
     return redirect('/friends/')
 
 def accept_friend(request, request_id):
-    req = get_object_or_404(FriendRequest, id=request_id)
+    req = FriendRequest.objects.filter(id=request_id).first()
 
-    # 친구 추가 로직
+    if not req:
+        return redirect('/requests/')  # 친구 요청 목록으로
+
+    # 친구 추가
     req.from_user.profile.friends.add(req.to_user)
     req.to_user.profile.friends.add(req.from_user)
 
@@ -189,12 +192,13 @@ def reject_request(request, id):
     return redirect('/friends/')
 
 def reject_friend(request, request_id):
-    req = get_object_or_404(FriendRequest, id=request_id)
+    req = FriendRequest.objects.filter(id=request_id).first()
 
-    # 요청만 삭제 (친구 추가 X)
+    if not req:
+        return redirect('/requests/')
+
     req.delete()
-
-    return redirect('/friends/')
+    return redirect('/requests/')
 
 # 일정 추가 (DB 저장)
 def add_schedule(request):
