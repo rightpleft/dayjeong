@@ -170,6 +170,17 @@ def accept_request(request, id):
 
     return redirect('/friends/')
 
+def accept_friend(request, request_id):
+    req = get_object_or_404(FriendRequest, id=request_id)
+
+    # 친구 추가 로직
+    req.from_user.profile.friends.add(req.to_user)
+    req.to_user.profile.friends.add(req.from_user)
+
+    req.delete()
+
+    return redirect('/friends/')
+
 # 요청 거절
 @login_required
 def reject_request(request, id):

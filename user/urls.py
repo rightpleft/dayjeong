@@ -21,6 +21,8 @@ urlpatterns = [
     path('friends/', views.friends),             # 친구 목록
     path('add-friend/', views.send_request),     # 친구 요청 보내기
     path('send-request/', views.send_request),   # 친구 요청 (중복 기능)
+    path('accept-friend/<int:request_id>/', views.accept_friend),
+    path('reject-friend/<int:request_id>/', views.reject_friend),
     path('requests/', views.friend_requests),    # 받은 친구 요청 목록
     path('friend/<int:user_id>/', views.friend_calendar),  # 친구 캘린더 보기
 

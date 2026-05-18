@@ -4,8 +4,8 @@
     <div>
         {{ r.from_user.username }}
 
-        <a href="/accept-request/{{ r.id }}/">수락</a>
-        <a href="/reject/{{ r.id }}/">거절</a>
+        <a href="/accept-friend/{{ r.id }}/">수락</a>
+        <a href="/reject-friend/{{ r.id }}/">거절</a>
     </div>
 {% empty %}
     <p>요청 없음</p>
