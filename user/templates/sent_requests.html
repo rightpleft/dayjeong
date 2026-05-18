@@ -22,17 +22,20 @@
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .cancel-btn {
             color: red;
             text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
 
+<!-- 🔙 상단 -->
 <div class="top-bar">
     <a href="/add/">📅 일정목록으로</a>
 </div>
@@ -42,17 +45,16 @@
 {% for r in requests %}
     <div class="req">
         <span>{{ r.to_user.username }} - {{ r.date }}</span>
-        <a href="/cancel-request/{{ r.id }}/" class="cancel-btn">취소</a>
+
+        <a href="/cancel-request/{{ r.id }}/"
+           class="cancel-btn"
+           onclick="return confirm('요청을 취소하시겠습니까?')">
+           취소
+        </a>
     </div>
 {% empty %}
     <p>보낸 요청 없음</p>
 {% endfor %}
-
-<a href="/cancel-request/{{ r.id }}/"
-   class="cancel-btn"
-   onclick="return confirm('요청을 취소하시겠습니까?')">
-   취소
-</a>
 
 </body>
 </html>
