@@ -161,3 +161,6 @@ def reject_schedule(request, request_id):
 @login_required
 def add_schedule(request):
     return render(request, 'add_schedule.html')
+
+def coming(request):
+    return render(request, 'coming.html')
