@@ -308,8 +308,11 @@ def cancel_request(request, request_id):
 
 @login_required
 def accept_request(request, request_id):
-    req = get_object_or_404(ScheduleRequest, id=request_id)
+    req = ScheduleRequest.objects.filter(id=request_id).first()
 
+    if not req:
+        return redirect('/schedule-requests/')
+    
     # 🔥 내 일정 추가
     Schedule.objects.create(
         user=request.user,
