@@ -156,3 +156,8 @@ def reject_schedule(request, request_id):
         req.delete()
 
     return redirect('/schedule-requests/')
+
+#일정 추가
+@login_required
+def add_schedule(request):
+    return render(request, 'add_schedule.html')
