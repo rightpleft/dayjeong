@@ -32,12 +32,6 @@ urlpatterns = [
     # 📥 받은 일정 요청 목록
     path('schedule-requests/', views.schedule_requests),
 
-    # ✅ 일정 요청 수락
-    path('accept-request/<int:request_id>/', views.accept_request),
-
-    # ❌ 일정 요청 거절
-    path('reject-request/<int:request_id>/', views.reject_request),
-
     # 📤 내가 보낸 요청 목록
     path('sent-requests/', views.sent_requests),
 
