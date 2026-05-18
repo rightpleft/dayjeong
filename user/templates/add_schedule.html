@@ -1,138 +1,82 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>일정 관리</title>
+    <meta charset="UTF-8">
+    <title>일정</title>
 
-<style>
-body {
-    font-family: Arial;
-    padding:20px;
-    background:#f5f6fa;
-    padding-bottom: 80px; /* 하단바 + 버튼 공간 */
-}
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: #fafafa;
+        }
 
-/* 상단 */
-.header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
-}
+        h2 {
+            margin-bottom: 20px;
+        }
 
-/* 캘린더 */
-.calendar {
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap:5px;
-    margin-bottom:20px;
-}
+        /* 일정 카드 */
+        .schedule-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
-.day {
-    padding:10px;
-    text-align:center;
-    border-radius:5px;
-    background:#eee;
-    cursor:pointer;
-}
+        /* floating 버튼 */
+        .floating-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            padding: 12px 16px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
-/* 상태 색 */
-.확정 { background:#4CAF50; color:white; }
-.겹침 { background:#f44336; color:white; }
-.미확정 { background:orange; color:white; }
+        /* 요청 개수 */
+        .badge {
+            background: red;
+            border-radius: 50%;
+            padding: 3px 7px;
+            margin-left: 5px;
+        }
 
-/* 상태 설명 */
-.legend {
-    margin-bottom:15px;
-    font-size:14px;
-}
+        /* 하단 바 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
 
-/* 리스트 */
-.schedule-item {
-    padding:10px;
-    background:white;
-    margin-top:5px;
-}
-
-/* 하단 네비 */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left:0;
-    width: 100%;
-    background: white;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-}
-
-/* 🔥 플로팅 버튼 */
-.floating-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 80px;
-
-    padding: 12px 16px;
-    background: #4CAF50;
-    color: white;
-
-    border-radius: 25px;
-    font-size: 14px;
-    text-decoration: none;
-
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-/* 🔴 요청 개수 */
-.badge {
-    background: red;
-    color: white;
-    border-radius: 50%;
-    padding: 3px 7px;
-    font-size: 12px;
-}
-</style>
+        .bottom-nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>📅 일정 관리</h2>
+<h2>📅 내 일정</h2>
 
-<!-- 월 이동 -->
-<div class="header">
-    <button onclick="prevMonth()">◀</button>
-    <h3 id="month"></h3>
-    <button onclick="nextMonth()">▶</button>
+<!-- 일정 목록 (지금은 테스트용) -->
+<div class="schedule-box">
+    일정 없음
 </div>
 
-<!-- 상태 설명 -->
-<div class="legend">
-    <span style="color:#4CAF50;">● 확정</span>
-    <span style="color:orange;">● 미확정</span>
-    <span style="color:#f44336;">● 겹침</span>
-</div>
 
-<!-- 캘린더 -->
-<div id="calendar" class="calendar"></div>
-
-<h3 id="date">날짜 선택</h3>
-
-<input type="text" id="title" placeholder="일정">
-<select id="status">
-    <option value="확정">확정</option>
-    <option value="미확정">미확정</option>
-</select>
-
-<button onclick="add()">추가</button>
-
-<div id="list"></div>
-
-<!-- 🔥 일정 요청 버튼 -->
+<!-- 📨 일정 요청 버튼 -->
 <a href="/schedule-requests/" class="floating-btn">
     📨 일정 요청
     {% if request_count > 0 %}
@@ -140,150 +84,12 @@ body {
     {% endif %}
 </a>
 
+
 <!-- 하단 네비 -->
 <div class="bottom-nav">
-    <a href="/">🏠 홈</a>
-    <a href="/add/">📅 일정</a>
     <a href="/friends/">👥 친구</a>
-    <a href="/settings/">⚙ 설정</a>
+    <a href="/add/">📅 일정</a>
 </div>
-
-<script>
-let selected = null;
-let now = new Date();
-now.setDate(1);
-
-function key(){
-    return `cal-${now.getFullYear()}-${now.getMonth()}`;
-}
-
-function loadCal(){
-    const cal = document.getElementById("calendar");
-    cal.innerHTML = "";
-
-    const year = now.getFullYear();
-    const month = now.getMonth();
-
-    document.getElementById("month").innerText =
-        `${year}년 ${month+1}월`;
-
-    const saved = JSON.parse(localStorage.getItem(key())) || {};
-
-    const firstDay = new Date(year, month, 1).getDay();
-    const lastDay = new Date(year, month+1, 0).getDate();
-
-    // 요일
-    const days = ["일","월","화","수","목","금","토"];
-    days.forEach(d=>{
-        const div = document.createElement("div");
-        div.innerText = d;
-        div.style.fontWeight = "bold";
-        cal.appendChild(div);
-    });
-
-    // 빈칸
-    for(let i=0; i<firstDay; i++){
-        cal.appendChild(document.createElement("div"));
-    }
-
-    // 날짜
-    for(let d=1; d<=lastDay; d++){
-        const div = document.createElement("div");
-        div.className = "day";
-        div.innerText = d;
-
-        if(saved[d]){
-            if(saved[d].length > 1){
-                div.classList.add("겹침");
-            } else {
-                div.classList.add(saved[d][0].status);
-            }
-        }
-
-        div.onclick = () => select(d);
-        cal.appendChild(div);
-    }
-}
-
-function prevMonth(){
-    now.setMonth(now.getMonth() - 1);
-    now.setDate(1);
-    loadCal();
-}
-
-function nextMonth(){
-    now.setMonth(now.getMonth() + 1);
-    now.setDate(1);
-    loadCal();
-}
-
-function select(d){
-    selected = d;
-    document.getElementById("date").innerText =
-        `${now.getMonth()+1}/${d}`;
-    loadList();
-}
-
-function loadList(){
-    const saved = JSON.parse(localStorage.getItem(key())) || {};
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-
-    if(saved[selected]){
-        saved[selected].forEach((s,i)=>{
-            const div = document.createElement("div");
-            div.className = "schedule-item";
-            div.innerHTML = `
-                ${s.title} (${s.status})
-                <button onclick="del(${i})">삭제</button>
-            `;
-            list.appendChild(div);
-        });
-    }
-}
-
-function add(){
-    const title = document.getElementById("title").value;
-    const status = document.getElementById("status").value;
-
-    if(!selected || !title){
-        alert("입력해!");
-        return;
-    }
-
-    const saved = JSON.parse(localStorage.getItem(key())) || {};
-
-    if(!saved[selected]){
-        saved[selected] = [];
-    }
-
-    saved[selected].push({title, status});
-
-    localStorage.setItem(key(), JSON.stringify(saved));
-
-    document.getElementById("title").value = "";
-
-    loadCal();
-    loadList();
-}
-
-function del(i){
-    const saved = JSON.parse(localStorage.getItem(key())) || {};
-
-    saved[selected].splice(i,1);
-
-    if(saved[selected].length === 0){
-        delete saved[selected];
-    }
-
-    localStorage.setItem(key(), JSON.stringify(saved));
-
-    loadCal();
-    loadList();
-}
-
-loadCal();
-</script>
 
 </body>
 </html>
