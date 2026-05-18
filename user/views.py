@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
+from .models import ScheduleRequest
 
 from .models import Profile, FriendRequest, Schedule, ScheduleRequest
 
@@ -174,4 +175,15 @@ def friend_calendar(request, user_id):
     return render(request, 'friend_calendar.html', {
         'friend': friend,
         'schedules': schedules
+    })
+
+@login_required
+def sent_requests(request):
+    requests = ScheduleRequest.objects.filter(
+        from_user=request.user,
+        status='pending'
+    )
+
+    return render(request, 'sent_requests.html', {
+        'requests': requests
     })
