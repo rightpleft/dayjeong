@@ -187,3 +187,15 @@ def sent_requests(request):
     return render(request, 'sent_requests.html', {
         'requests': requests
     })
+
+@login_required
+def cancel_request(request, request_id):
+    req = ScheduleRequest.objects.filter(
+        id=request_id,
+        from_user=request.user
+    ).first()
+
+    if req:
+        req.delete()
+
+    return redirect('/sent-requests/')
