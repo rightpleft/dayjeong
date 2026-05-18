@@ -1,12 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>일정 요청</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        /* 상단 바 */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        h2 {
+            margin: 0;
+        }
+
+        /* 요청 카드 */
+        .req {
+            background: white;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔙 상단 바 -->
+<div class="top-bar">
+    <a href="/add/" class="back-btn">📅 일정목록으로</a>
+    <a href="/sent-requests/">📤 보낸 요청</a>
+</div>
+
 <h2>📨 일정 요청</h2>
 
 {% for r in requests %}
-<div>
-    {{ r.from_user.username }} / {{ r.date }}
-
-    <a href="/accept-schedule/{{ r.id }}/">수락</a>
-    <a href="/reject-schedule/{{ r.id }}/">거절</a>
-</div>
+    <div class="req">
+        {{ r.from_user.username }} - {{ r.date }}
+    </div>
 {% empty %}
-<p>요청 없음</p>
+    <p>요청 없음</p>
 {% endfor %}
+
+</body>
+</html>

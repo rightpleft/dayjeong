@@ -22,4 +22,7 @@ urlpatterns = [
     path('schedule-requests/', views.schedule_requests),
     path('accept-schedule/<int:id>/', views.accept_schedule),
     path('reject-schedule/<int:id>/', views.reject_schedule),
+
+    path('sent-requests/', views.sent_requests),
+    path('cancel-request/<int:request_id>/', views.cancel_request),
 ]

@@ -281,3 +281,22 @@ def add_schedule(request):
     ).count()
 
     return render(request, 'add_schedule.html')
+
+@login_required
+def sent_requests(request):
+    requests = ScheduleRequest.objects.filter(
+        from_user=request.user,
+        status='pending'
+    )
+
+    return render(request, 'sent_requests.html', {
+        'requests': requests
+    })
+
+
+@login_required
+def cancel_request(request, request_id):
+    req = get_object_or_404(ScheduleRequest, id=request_id, from_user=request.user)
+    req.delete()
+
+    return redirect('/sent-requests/')

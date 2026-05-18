@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>보낸 요청</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .top-bar {
+            margin-bottom: 20px;
+        }
+
+        .req {
+            background: white;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cancel-btn {
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <a href="/add/">📅 일정목록으로</a>
+</div>
+
+<h2>📤 내가 보낸 요청</h2>
+
+{% for r in requests %}
+    <div class="req">
+        <span>{{ r.to_user.username }} - {{ r.date }}</span>
+        <a href="/cancel-request/{{ r.id }}/" class="cancel-btn">취소</a>
+    </div>
+{% empty %}
+    <p>보낸 요청 없음</p>
+{% endfor %}
+
+</body>
+</html>
