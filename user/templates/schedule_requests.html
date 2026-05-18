@@ -27,13 +27,13 @@
 
         .btn-group {
             display: flex;
-            gap: 5px;
+            gap: 6px;
         }
 
         .ok-btn {
             background: green;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 10px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: bold;
@@ -42,13 +42,12 @@
         .no-btn {
             background: red;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 10px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: bold;
         }
 
-        /* 📤 보낸 요청 버튼 (우측 하단) */
         .floating-btn {
             position: fixed;
             right: 20px;
@@ -78,9 +77,9 @@
         <div class="btn-group">
             <!-- ✅ 수락 -->
             <a href="/accept-request/{{ r.id }}/"
-                class="ok-btn"
-                onclick="return confirm('이 요청을 수락하시겠습니까?')">
-                O
+               class="ok-btn"
+               onclick="return confirm('이 요청을 수락하시겠습니까?')">
+               O
             </a>
 
             <!-- ❌ 거절 -->
@@ -95,7 +94,7 @@
     <p>요청 없음</p>
 {% endfor %}
 
-<!-- 📤 보낸 요청 버튼 -->
+<!-- 📤 보낸 요청 -->
 <a href="/sent-requests/" class="floating-btn">
     📤 보낸 요청
 </a>
