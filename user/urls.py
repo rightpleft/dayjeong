@@ -35,6 +35,9 @@ urlpatterns = [
     # 📤 내가 보낸 요청 목록
     path('sent-requests/', views.sent_requests),
 
+    path('accept-schedule/<int:request_id>/', views.accept_schedule),
+    path('reject-schedule/<int:request_id>/', views.reject_schedule),
+
     # 🚫 보낸 요청 취소
     path('cancel-request/<int:request_id>/', views.cancel_request),
 ]
