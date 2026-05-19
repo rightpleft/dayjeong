@@ -161,7 +161,17 @@ def reject_schedule(request, request_id):
 #일정 추가
 @login_required
 def add_schedule(request):
-    return render(request, 'add_schedule.html')
+    schedules = Schedule.objects.filter(user=request.user).order_by('date')
+
+    request_count = ScheduleRequest.objects.filter(
+        to_user=request.user,
+        status='pending'
+    ).count()
+
+    return render(request, 'add_schedule.html', {
+        'schedules': schedules,
+        'request_count': request_count
+    })
 
 def coming(request):
     return render(request, 'coming.html')
