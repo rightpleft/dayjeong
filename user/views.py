@@ -8,6 +8,10 @@ from .models import ScheduleRequest
 
 from .models import Profile, FriendRequest, Schedule, ScheduleRequest
 
+import calendar
+from datetime import date
+from collections import defaultdict
+
 
 # 🔐 로그인
 def login_view(request):
@@ -161,7 +165,39 @@ def reject_schedule(request, request_id):
 #일정 추가
 @login_required
 def add_schedule(request):
-    schedules = Schedule.objects.filter(user=request.user).order_by('date')
+    today = date.today()
+    year = today.year
+    month = today.month
+
+    cal = calendar.monthcalendar(year, month)
+
+    schedules = Schedule.objects.filter(
+        user=request.user,
+        date__year=year,
+        date__month=month
+    )
+
+    # 🔥 날짜별 상태 계산
+    day_status = {}
+
+    for s in schedules:
+        day = s.date.day
+
+        if day not in day_status:
+            day_status[day] = []
+
+        day_status[day].append(s)
+
+    result = {}
+
+    for day, items in day_status.items():
+        if len(items) > 1:
+            result[day] = 'red'   # 겹침
+        else:
+            if items[0].status == 'confirmed':
+                result[day] = 'green'
+            else:
+                result[day] = 'orange'
 
     request_count = ScheduleRequest.objects.filter(
         to_user=request.user,
@@ -169,7 +205,10 @@ def add_schedule(request):
     ).count()
 
     return render(request, 'add_schedule.html', {
-        'schedules': schedules,
+        'calendar': cal,
+        'day_status': result,
+        'year': year,
+        'month': month,
         'request_count': request_count
     })
 
