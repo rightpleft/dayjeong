@@ -1,0 +1,8 @@
+<h2>일정 추가</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="date" name="date" required>
+    <input type="text" name="title" placeholder="일정 제목" required>
+    <button type="submit">저장</button>
+</form>

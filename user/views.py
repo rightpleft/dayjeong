@@ -199,3 +199,15 @@ def cancel_request(request, request_id):
         req.delete()
 
     return redirect('/sent-requests/')
+
+@login_required
+def create_schedule(request):
+    if request.method == "POST":
+        Schedule.objects.create(
+            user=request.user,
+            date=request.POST.get("date"),
+            title=request.POST.get("title")
+        )
+        return redirect('/add/')
+
+    return render(request, 'create_schedule.html')

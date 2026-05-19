@@ -40,4 +40,6 @@ urlpatterns = [
 
     # 🚫 보낸 요청 취소
     path('cancel-request/<int:request_id>/', views.cancel_request),
+
+    path('create-schedule/', views.create_schedule),
 ]
