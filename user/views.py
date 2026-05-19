@@ -11,7 +11,7 @@ from .models import Profile, FriendRequest, Schedule, ScheduleRequest
 import calendar
 from datetime import date
 from collections import defaultdict
-
+from django.shortcuts import render, redirect
 
 # 🔐 로그인
 def login_view(request):
@@ -165,9 +165,9 @@ def reject_schedule(request, request_id):
 #일정 추가
 @login_required
 def add_schedule(request):
-    today = date.today()
-    year = today.year
-    month = today.month
+    # 📌 월 이동 처리
+    year = int(request.GET.get('year', date.today().year))
+    month = int(request.GET.get('month', date.today().month))
 
     cal = calendar.monthcalendar(year, month)
 
@@ -177,28 +177,23 @@ def add_schedule(request):
         date__month=month
     )
 
-    # 🔥 날짜별 상태 계산
+    # 📌 상태 계산
     day_status = {}
-
     for s in schedules:
-        day = s.date.day
-
-        if day not in day_status:
-            day_status[day] = []
-
-        day_status[day].append(s)
+        d = s.date.day
+        day_status.setdefault(d, []).append(s)
 
     result = {}
-
-    for day, items in day_status.items():
+    for d, items in day_status.items():
         if len(items) > 1:
-            result[day] = 'red'   # 겹침
+            result[d] = 'red'
         else:
             if items[0].status == 'confirmed':
-                result[day] = 'green'
+                result[d] = 'green'
             else:
-                result[day] = 'orange'
+                result[d] = 'orange'
 
+    # 📌 요청 개수
     request_count = ScheduleRequest.objects.filter(
         to_user=request.user,
         status='pending'

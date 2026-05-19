@@ -1,3 +1,4 @@
+{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -113,9 +114,48 @@
     {% endif %}
 </a>
 
-<a href="/create-schedule/" class="floating-btn" style="bottom:140px;">
-    ➕ 일정 추가
-</a>
+<!-- 캘린더 + 클릭 기능🔥>
+<h2>
+    <a href="?year={{ year }}&month={{ month|add:-1 }}">◀</a>
+    {{ year }}년 {{ month }}월
+    <a href="?year={{ year }}&month={{ month|add:1 }}">▶</a>
+</h2>
+
+<table border="1" width="100%" style="text-align:center; background:white;">
+<tr>
+    <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+</tr>
+
+{% for week in calendar %}
+<tr>
+{% for day in week %}
+    {% if day == 0 %}
+        <td></td>
+    {% else %}
+        {% if day in day_status %}
+            {% if day_status|get_item:day == 'green' %}
+                <td style="background:#4CAF50;">
+            {% elif day_status|get_item:day == 'orange' %}
+                <td style="background:#FFA500;">
+            {% elif day_status|get_item:day == 'red' %}
+                <td style="background:#f44336;">
+            {% endif %}
+        {% else %}
+            <td style="background:#eee;">
+        {% endif %}
+
+        <!-- 🔥 핵심: 날짜 클릭 -->
+        <a href="/create-schedule/?date={{ year }}-{{ month }}-{{ day }}" 
+           style="color:black; text-decoration:none;">
+            {{ day }}
+        </a>
+
+        </td>
+    {% endif %}
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
 
 
 <!-- 하단 네비 -->

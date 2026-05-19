@@ -2,7 +2,15 @@
 
 <form method="POST">
     {% csrf_token %}
-    <input type="date" name="date" required>
-    <input type="text" name="title" placeholder="일정 제목" required>
+
+    <input type="date" name="date" value="{{ request.GET.date }}">
+    
+    <input type="text" name="title" placeholder="일정 제목">
+
+    <select name="status">
+        <option value="confirmed">확정</option>
+        <option value="pending">미확정</option>
+    </select>
+
     <button type="submit">저장</button>
 </form>
