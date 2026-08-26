@@ -13,6 +13,13 @@ from datetime import date
 from collections import defaultdict
 from django.shortcuts import render, redirect
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+@login_required
+def settings_page(request):
+    return render(request, 'settings.html')
+
 # 🔐 로그인
 def login_view(request):
     if request.method == 'POST':

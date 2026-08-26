@@ -1,175 +1,972 @@
-{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>일정</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DayJeong - 일정</title>
 
     <style>
-        body {
-            font-family: Arial;
-            margin: 0;
-            padding: 20px;
-            background: #fafafa;
+        * {
+            box-sizing: border-box;
         }
 
-        h2 {
+        body {
+            margin: 0;
+            background: #f7f8f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         "Pretendard", sans-serif;
+            color: #222;
+            padding-bottom: 90px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 18px;
+        }
+
+        /* =========================
+           상단
+        ========================= */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .notification {
+            position: relative;
+            text-decoration: none;
+            font-size: 23px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -7px;
+
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 10px;
+            background: #ff4d4f;
+            color: white;
+
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           캘린더 카드
+        ========================= */
+
+        .calendar-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 14px 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            padding: 0 6px;
+        }
+
+        .month-title {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .month-btn {
+            width: 38px;
+            height: 38px;
+
+            border: 0;
+            border-radius: 12px;
+
+            background: #f3f5f3;
+
+            font-size: 20px;
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .month-btn:active {
+            transform: scale(0.93);
+        }
+
+        /* 요일 */
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 6px;
+        }
+
+        .weekday {
+            text-align: center;
+            padding: 8px 0;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            color: #999;
+        }
+
+        .weekday:first-child {
+            color: #ef6a6a;
+        }
+
+        .weekday:last-child {
+            color: #5b84d7;
+        }
+
+        /* 날짜 */
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            row-gap: 8px;
+        }
+
+        .day {
+            position: relative;
+
+            aspect-ratio: 1 / 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 2px;
+
+            border: none;
+            border-radius: 15px;
+
+            background: #f1f2f1;
+
+            color: #555;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .day:hover {
+            transform: translateY(-2px);
+        }
+
+        .day:active {
+            transform: scale(0.94);
+        }
+
+        .day.empty {
+            visibility: hidden;
+        }
+
+        /* 일정 상태 */
+
+        .day.none {
+            background: #f0f1f0;
+            color: #777;
+        }
+
+        .day.confirmed {
+            background: #dff4df;
+            color: #287a36;
+        }
+
+        .day.pending {
+            background: #fff0d7;
+            color: #c37400;
+        }
+
+        .day.overlap {
+            background: #ffe0df;
+            color: #d54141;
+        }
+
+        /* 오늘 */
+
+        .day.today::after {
+            content: "";
+            position: absolute;
+            bottom: 7px;
+
+            width: 4px;
+            height: 4px;
+
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* =========================
+           범례
+        ========================= */
+
+        .legend-card {
+            margin-top: 16px;
+
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+
+            background: white;
+            padding: 16px;
+
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.04);
+        }
+
+        .legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .green {
+            background: #74c87c;
+        }
+
+        .orange {
+            background: #f6ae45;
+        }
+
+        .red {
+            background: #ef6b68;
+        }
+
+        .gray {
+            background: #cfd3cf;
+        }
+
+        /* =========================
+           Bottom Sheet
+        ========================= */
+
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+
+            display: none;
+
+            background: rgba(0,0,0,0.35);
+            z-index: 50;
+        }
+
+        .sheet-overlay.show {
+            display: block;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+
+            left: 50%;
+            bottom: -100%;
+
+            width: 100%;
+            max-width: 480px;
+
+            transform: translateX(-50%);
+
+            background: white;
+
+            border-radius: 28px 28px 0 0;
+
+            padding: 12px 22px 30px;
+
+            z-index: 60;
+
+            transition: bottom 0.28s ease;
+        }
+
+        .bottom-sheet.show {
+            bottom: 0;
+        }
+
+        .sheet-handle {
+            width: 42px;
+            height: 5px;
+
+            background: #ddd;
+
+            border-radius: 20px;
+
+            margin: 0 auto 22px;
+        }
+
+        .sheet-title {
+            margin: 0 0 22px;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .field {
             margin-bottom: 20px;
         }
 
-        /* 일정 카드 */
-        .schedule-box {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        .field label {
+            display: block;
+
+            margin-bottom: 9px;
+
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
         }
 
-        /* floating 버튼 */
-        .floating-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 80px;
-            padding: 12px 16px;
-            background: #4CAF50;
-            color: white;
-            border-radius: 25px;
-            text-decoration: none;
+        .field input {
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #72c87b;
+        }
+
+        /* 상태 버튼 */
+
+        .status-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .status-option input {
+            display: none;
+        }
+
+        .status-option label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 13px;
+
+            border: 2px solid #eee;
+            border-radius: 14px;
+
+            cursor: pointer;
+
             font-size: 14px;
+            font-weight: 700;
+
+            margin: 0;
         }
 
-        /* 요청 개수 */
-        .badge {
-            background: red;
-            border-radius: 50%;
-            padding: 3px 7px;
-            margin-left: 5px;
+        .status-option.confirmed input:checked + label {
+            background: #e1f5e3;
+            border-color: #70c979;
+            color: #287a36;
         }
 
-        /* 하단 바 */
-        /* 하단 네비 */
+        .status-option.pending input:checked + label {
+            background: #fff0d7;
+            border-color: #f2ad47;
+            color: #b86d00;
+        }
+
+        /* 저장 */
+
+        .save-btn {
+            width: 100%;
+
+            margin-top: 8px;
+            padding: 15px;
+
+            border: none;
+            border-radius: 15px;
+
+            background: #68bd73;
+            color: white;
+
+            font-size: 15px;
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+        .save-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================
+           하단 네비
+        ========================= */
+
         .bottom-nav {
             position: fixed;
+
+            left: 50%;
             bottom: 0;
-            left:0;
+
+            transform: translateX(-50%);
+
             width: 100%;
-            background: white;
-            border-top: 1px solid #ddd;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
+            max-width: 480px;
+
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            background: rgba(255,255,255,0.96);
+
+            border-top: 1px solid #eee;
+
+            padding: 10px 0 12px;
+
+            z-index: 40;
         }
 
-        body {
-            padding-bottom: 70px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 3px;
+
+            color: #999;
+
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-icon {
+            font-size: 21px;
+        }
+
+        .nav-item.active {
+            color: #5eb66a;
+            font-weight: 700;
         }
     </style>
 </head>
 
 <body>
 
-<h2>📅 내 일정</h2>
+<div class="app">
 
-<!-- 일정 목록 (지금은 테스트용) -->
-<h2>📅 {{ year }}년 {{ month }}월</h2>
+    <!-- 상단 -->
+    <div class="header">
 
-<table border="1" width="100%" style="text-align:center; background:white;">
-    <tr>
-        <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
-    </tr>
+        <div class="logo">
+            DayJeong
+        </div>
 
-    {% for week in calendar %}
-    <tr>
-        {% for day in week %}
-            {% if day == 0 %}
-                <td></td>
-            {% else %}
-                {% if day in day_status %}
-                    {% if day_status.day == 'green' %}
-                        <td style="background:#4CAF50; color:white;">
-                    {% elif day_status.day == 'orange' %}
-                        <td style="background:#FFA500; color:white;">
-                    {% elif day_status.day == 'red' %}
-                        <td style="background:#f44336; color:white;">
-                    {% endif %}
-                {% else %}
-                    <td style="background:#eee;">
-                {% endif %}
+        <a href="/schedule-requests/" class="notification">
+            🔔
 
-                {{ day }}
-                </td>
+            {% if request_count > 0 %}
+                <span class="notification-badge">
+                    {{ request_count }}
+                </span>
             {% endif %}
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
-
-
-<!-- 📨 일정 요청 버튼 -->
-<a href="/schedule-requests/" class="floating-btn">
-    📨 일정 요청
-    {% if request_count > 0 %}
-        <span class="badge">{{ request_count }}</span>
-    {% endif %}
-</a>
-
-<!-- 캘린더 + 클릭 기능🔥>
-<h2>
-    <a href="?year={{ year }}&month={{ month|add:-1 }}">◀</a>
-    {{ year }}년 {{ month }}월
-    <a href="?year={{ year }}&month={{ month|add:1 }}">▶</a>
-</h2>
-
-<table border="1" width="100%" style="text-align:center; background:white;">
-<tr>
-    <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
-</tr>
-
-{% for week in calendar %}
-<tr>
-{% for day in week %}
-    {% if day == 0 %}
-        <td></td>
-    {% else %}
-        {% if day in day_status %}
-            {% if day_status|get_item:day == 'green' %}
-                <td style="background:#4CAF50;">
-            {% elif day_status|get_item:day == 'orange' %}
-                <td style="background:#FFA500;">
-            {% elif day_status|get_item:day == 'red' %}
-                <td style="background:#f44336;">
-            {% endif %}
-        {% else %}
-            <td style="background:#eee;">
-        {% endif %}
-
-        <!-- 🔥 핵심: 날짜 클릭 -->
-        <a href="/create-schedule/?date={{ year }}-{{ month }}-{{ day }}" 
-           style="color:black; text-decoration:none;">
-            {{ day }}
         </a>
 
-        </td>
-    {% endif %}
-{% endfor %}
-</tr>
-{% endfor %}
-</table>
+    </div>
 
 
-<!-- 하단 네비 -->
-<div class="bottom-nav">
-    <a href="/">🏠 홈</a>
-    <a href="/add/">📅 일정</a>
-    <a href="/friends/">👥 친구</a>
-    <a href="/settings/">⚙ 설정</a>
+    <!-- 캘린더 -->
+    <div class="calendar-card">
+
+        <div class="calendar-header">
+
+            <button
+                type="button"
+                class="month-btn"
+                onclick="changeMonth(-1)"
+            >
+                ‹
+            </button>
+
+            <div
+                class="month-title"
+                id="monthTitle"
+            ></div>
+
+            <button
+                type="button"
+                class="month-btn"
+                onclick="changeMonth(1)"
+            >
+                ›
+            </button>
+
+        </div>
+
+
+        <div class="weekdays">
+            <div class="weekday">일</div>
+            <div class="weekday">월</div>
+            <div class="weekday">화</div>
+            <div class="weekday">수</div>
+            <div class="weekday">목</div>
+            <div class="weekday">금</div>
+            <div class="weekday">토</div>
+        </div>
+
+
+        <div
+            class="calendar-grid"
+            id="calendar"
+        ></div>
+
+    </div>
+
+
+    <!-- 색상 설명 -->
+    <div class="legend-card">
+
+        <div class="legend">
+            <span class="legend-dot green"></span>
+            확정
+        </div>
+
+        <div class="legend">
+            <span class="legend-dot orange"></span>
+            미확정
+        </div>
+
+        <div class="legend">
+            <span class="legend-dot red"></span>
+            일정 겹침
+        </div>
+
+        <div class="legend">
+            <span class="legend-dot gray"></span>
+            일정 없음
+        </div>
+
+    </div>
+
 </div>
 
+
+<!-- 어두운 배경 -->
+<div
+    class="sheet-overlay"
+    id="sheetOverlay"
+    onclick="closeSheet()"
+></div>
+
+
+<!-- 일정 입력 Bottom Sheet -->
+<div
+    class="bottom-sheet"
+    id="bottomSheet"
+>
+
+    <div class="sheet-handle"></div>
+
+    <h2
+        class="sheet-title"
+        id="selectedDateTitle"
+    >
+        일정
+    </h2>
+
+
+    <form
+        method="POST"
+        action="/create-schedule/"
+    >
+
+        {% csrf_token %}
+
+        <!-- 실제 서버로 보내는 날짜 -->
+        <input
+            type="hidden"
+            name="date"
+            id="selectedDate"
+        >
+
+
+        <div class="field">
+
+            <label>
+                일정 내용
+            </label>
+
+            <input
+                type="text"
+                name="title"
+                placeholder="예: 주하랑 영화 보기"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                일정 상태
+            </label>
+
+            <div class="status-options">
+
+                <div class="status-option confirmed">
+
+                    <input
+                        type="radio"
+                        id="confirmed"
+                        name="status"
+                        value="confirmed"
+                        checked
+                    >
+
+                    <label for="confirmed">
+                        🟢 확정
+                    </label>
+
+                </div>
+
+
+                <div class="status-option pending">
+
+                    <input
+                        type="radio"
+                        id="pending"
+                        name="status"
+                        value="pending"
+                    >
+
+                    <label for="pending">
+                        🟠 미확정
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="save-btn"
+        >
+            일정 저장
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- 하단 메뉴 -->
+<nav class="bottom-nav">
+
+    <a href="/" class="nav-item">
+        <span class="nav-icon">⌂</span>
+        홈
+    </a>
+
+    <a href="/add/" class="nav-item active">
+        <span class="nav-icon">▣</span>
+        일정
+    </a>
+
+    <a href="/friends/" class="nav-item">
+        <span class="nav-icon">♟</span>
+        친구
+    </a>
+
+    <a href="/settings/" class="nav-item">
+        <span class="nav-icon">⚙</span>
+        설정
+    </a>
+
+</nav>
+
+
 <script>
-window.addEventListener("beforeunload", function () {
-    navigator.sendBeacon('/logout/');
-});
+
+    /*
+    ================================
+    현재 보고 있는 연/월
+    ================================
+    */
+
+    const today = new Date();
+
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth();
+
+
+    /*
+    ================================
+    테스트 상태
+
+    다음 단계에서 Django DB 데이터로
+    이 부분을 교체할 거야.
+    ================================
+    */
+
+    const scheduleStatus = {
+
+        // 예시
+        // "2026-08-05": "confirmed",
+        // "2026-08-09": "pending",
+        // "2026-08-15": "overlap"
+
+    };
+
+
+    /*
+    ================================
+    캘린더 그리기
+    ================================
+    */
+
+    function renderCalendar() {
+
+        const calendar =
+            document.getElementById("calendar");
+
+        const title =
+            document.getElementById("monthTitle");
+
+
+        calendar.innerHTML = "";
+
+
+        title.innerText =
+            `${currentYear}년 ${currentMonth + 1}월`;
+
+
+        const firstDay =
+            new Date(
+                currentYear,
+                currentMonth,
+                1
+            ).getDay();
+
+
+        const lastDate =
+            new Date(
+                currentYear,
+                currentMonth + 1,
+                0
+            ).getDate();
+
+
+        // 앞쪽 빈칸
+        for (let i = 0; i < firstDay; i++) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className =
+                "day empty";
+
+            calendar.appendChild(empty);
+        }
+
+
+        // 날짜
+        for (
+            let day = 1;
+            day <= lastDate;
+            day++
+        ) {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+
+            const dateKey =
+                `${currentYear}-${String(
+                    currentMonth + 1
+                ).padStart(2, "0")}-${String(
+                    day
+                ).padStart(2, "0")}`;
+
+
+            const status =
+                scheduleStatus[dateKey]
+                || "none";
+
+
+            button.className =
+                `day ${status}`;
+
+
+            button.innerText = day;
+
+
+            // 오늘 표시
+            if (
+                currentYear === today.getFullYear()
+                &&
+                currentMonth === today.getMonth()
+                &&
+                day === today.getDate()
+            ) {
+
+                button.classList.add("today");
+            }
+
+
+            button.onclick = () => {
+
+                openScheduleSheet(
+                    currentYear,
+                    currentMonth + 1,
+                    day
+                );
+
+            };
+
+
+            calendar.appendChild(button);
+
+        }
+
+    }
+
+
+    /*
+    ================================
+    이전 / 다음 달
+    ================================
+    */
+
+    function changeMonth(amount) {
+
+        currentMonth += amount;
+
+
+        if (currentMonth < 0) {
+
+            currentMonth = 11;
+            currentYear--;
+
+        }
+
+
+        if (currentMonth > 11) {
+
+            currentMonth = 0;
+            currentYear++;
+
+        }
+
+
+        renderCalendar();
+
+    }
+
+
+    /*
+    ================================
+    일정 입력창 열기
+    ================================
+    */
+
+    function openScheduleSheet(
+        year,
+        month,
+        day
+    ) {
+
+        const formattedDate =
+            `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+
+        document.getElementById(
+            "selectedDate"
+        ).value = formattedDate;
+
+
+        document.getElementById(
+            "selectedDateTitle"
+        ).innerText =
+            `${month}월 ${day}일`;
+
+
+        document.getElementById(
+            "sheetOverlay"
+        ).classList.add("show");
+
+
+        document.getElementById(
+            "bottomSheet"
+        ).classList.add("show");
+
+    }
+
+
+    /*
+    ================================
+    입력창 닫기
+    ================================
+    */
+
+    function closeSheet() {
+
+        document.getElementById(
+            "sheetOverlay"
+        ).classList.remove("show");
+
+
+        document.getElementById(
+            "bottomSheet"
+        ).classList.remove("show");
+
+    }
+
+
+    /*
+    ================================
+    최초 실행
+    ================================
+    */
+
+    renderCalendar();
+
 </script>
 
 </body>

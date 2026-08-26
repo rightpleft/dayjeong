@@ -2,144 +2,940 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>홈</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DayJeong</title>
 
 <style>
-body { font-family: Arial; background:#f5f6fa; margin:0; }
-
-.container { width:700px; margin:50px auto; }
-
-.top-bar {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:10px;
+* {
+    box-sizing: border-box;
 }
 
-.card {
-    background:white;
-    padding:20px;
-    border-radius:10px;
+body {
+    margin: 0;
+    background: #f7f9f7;
+    color: #222;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Pretendard",
+        sans-serif;
+
+    padding-bottom: 90px;
 }
+
+
+/* =========================
+   전체 앱
+========================= */
+
+.app {
+    width: 100%;
+    max-width: 480px;
+
+    margin: 0 auto;
+    padding: 24px 18px 30px;
+}
+
+
+/* =========================
+   상단
+========================= */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 28px;
+}
+
+.logo-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+
+    letter-spacing: -0.7px;
+}
+
+.welcome {
+    margin-top: 5px;
+
+    color: #8b918c;
+
+    font-size: 13px;
+}
+
+.profile-btn {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e6f5e7;
+
+    color: #3c9149;
+
+    font-size: 20px;
+
+    text-decoration: none;
+}
+
+
+/* =========================
+   날짜
+========================= */
+
+.today-title {
+    margin-bottom: 12px;
+}
+
+.today-date {
+    color: #7f8580;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.today-title h1 {
+    margin: 5px 0 0;
+
+    font-size: 27px;
+    letter-spacing: -1px;
+}
+
+
+/* =========================
+   오늘 일정 카드
+========================= */
+
+.main-card {
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.045);
+
+    margin-bottom: 16px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 16px;
+}
+
+.card-title {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.calendar-link {
+    color: #5ca967;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   일정 박스
+========================= */
 
 .schedule-box {
-    padding:15px;
-    border-radius:10px;
-    margin-top:10px;
-    color:white;
+    padding: 16px;
+
+    margin-top: 10px;
+
+    border-radius: 17px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 1.5;
+
+    transition: 0.15s;
 }
 
-.확정 { background:#4CAF50; }
-.겹침 { background:#f44336; }
-.미확정 { background:orange; }
-.없음 { background:#ccc; color:black; }
-
-.contact {
-    margin-top:20px;
-    text-align:center;
-    font-size:14px;
+.schedule-box:active {
+    transform: scale(0.98);
 }
+
+
+/* 확정 */
+
+.확정 {
+    background: #e4f6e5;
+    color: #287a35;
+}
+
+
+/* 미확정 */
+
+.미확정 {
+    background: #fff1d9;
+    color: #b76b00;
+}
+
+
+/* 겹침 */
+
+.겹침 {
+    background: #ffe4e2;
+    color: #ce4340;
+}
+
+
+/* 없음 */
+
+.없음 {
+    background: #f1f2f1;
+    color: #8a8f8b;
+}
+
+
+/* =========================
+   상태 설명
+========================= */
+
+.legend {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 6px;
+
+    margin-top: 17px;
+}
+
+.legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 10px;
+    color: #888;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+}
+
+.green {
+    background: #73c77c;
+}
+
+.orange {
+    background: #f0aa42;
+}
+
+.red {
+    background: #ed6b67;
+}
+
+.gray {
+    background: #c8cdca;
+}
+
+
+/* =========================
+   예정 일정
+========================= */
+
+.upcoming-card {
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    margin-bottom: 16px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.upcoming-header {
+    margin-bottom: 12px;
+}
+
+.upcoming-title {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.upcoming-description {
+    margin-top: 4px;
+
+    font-size: 12px;
+    color: #999;
+}
+
+
+/* =========================
+   빠른 메뉴
+========================= */
+
+.quick-menu {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+.quick-card {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    min-height: 105px;
+
+    padding: 17px;
+
+    border-radius: 20px;
+
+    background: white;
+
+    text-decoration: none;
+    color: #222;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.035);
+}
+
+.quick-icon {
+    font-size: 23px;
+}
+
+.quick-name {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.quick-sub {
+    color: #999;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================
+   문의
+========================= */
+
+.contact-card {
+    padding: 18px;
+
+    border-radius: 20px;
+
+    background: #eff7f0;
+
+    text-align: center;
+
+    margin-bottom: 10px;
+}
+
+.contact-title {
+    font-size: 13px;
+    font-weight: 800;
+
+    margin-bottom: 9px;
+}
+
+.contact-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 6px 12px;
+}
+
+.contact-links a {
+    color: #639269;
+
+    font-size: 11px;
+
+    text-decoration: none;
+}
+
+
+/* =========================
+   하단 네비
+========================= */
 
 .bottom-nav {
     position: fixed;
+
+    left: 50%;
     bottom: 0;
+
+    transform: translateX(-50%);
+
     width: 100%;
-    background: white;
-    border-top: 1px solid #ddd;
+    max-width: 480px;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    background: rgba(255,255,255,0.97);
+
+    border-top: 1px solid #eceeec;
+
+    padding: 9px 0 12px;
+
+    z-index: 100;
+}
+
+.nav-item {
     display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    color: #9b9f9c;
+
+    text-decoration: none;
+
+    font-size: 10px;
+}
+
+.nav-icon {
+    font-size: 21px;
+}
+
+.nav-item.active {
+    color: #59ae65;
+
+    font-weight: 800;
+}
+
+
+/* 모바일 */
+
+@media (max-width: 360px) {
+
+    .app {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
 }
 </style>
 </head>
 
+
 <body>
 
-<div class="container">
+<div class="app">
 
-<div class="top-bar">
-    <div>👤 {{ request.user.username }}</div>
-    <div><a href="/logout/">로그아웃</a></div>
+
+    <!-- 상단 -->
+    <header class="header">
+
+        <div class="logo-area">
+
+            <div class="logo">
+                DayJeong
+            </div>
+
+            <div class="welcome">
+                {{ request.user.username }}님의 하루
+            </div>
+
+        </div>
+
+
+        <a
+            href="/settings/"
+            class="profile-btn"
+        >
+            👤
+        </a>
+
+    </header>
+
+
+
+    <!-- 날짜 -->
+    <section class="today-title">
+
+        <div
+            class="today-date"
+            id="todayDate"
+        ></div>
+
+        <h1>
+            오늘도 좋은 하루 👋
+        </h1>
+
+    </section>
+
+
+
+    <!-- 오늘 일정 -->
+    <section class="main-card">
+
+        <div class="card-header">
+
+            <div class="card-title">
+                오늘의 일정
+            </div>
+
+            <a
+                href="/add/"
+                class="calendar-link"
+            >
+                캘린더 보기 →
+            </a>
+
+        </div>
+
+
+        <div id="today"></div>
+
+
+        <div class="legend">
+
+            <div class="legend-item">
+                <span class="dot green"></span>
+                확정
+            </div>
+
+            <div class="legend-item">
+                <span class="dot orange"></span>
+                미확정
+            </div>
+
+            <div class="legend-item">
+                <span class="dot red"></span>
+                겹침
+            </div>
+
+            <div class="legend-item">
+                <span class="dot gray"></span>
+                없음
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- 예정 일정 -->
+    <section class="upcoming-card">
+
+        <div class="upcoming-header">
+
+            <div class="upcoming-title">
+                다가오는 일정
+            </div>
+
+            <div class="upcoming-description">
+                앞으로 6일간의 일정을 확인해보세요
+            </div>
+
+        </div>
+
+        <div id="upcoming"></div>
+
+    </section>
+
+
+
+    <!-- 빠른 메뉴 -->
+    <section class="quick-menu">
+
+        <a
+            href="/add/"
+            class="quick-card"
+        >
+
+            <div class="quick-icon">
+                📅
+            </div>
+
+            <div class="quick-name">
+                내 캘린더
+            </div>
+
+            <div class="quick-sub">
+                일정 확인과 등록
+            </div>
+
+        </a>
+
+
+        <a
+            href="/friends/"
+            class="quick-card"
+        >
+
+            <div class="quick-icon">
+                👥
+            </div>
+
+            <div class="quick-name">
+                친구
+            </div>
+
+            <div class="quick-sub">
+                친구 일정 확인하기
+            </div>
+
+        </a>
+
+    </section>
+
+
+
+    <!-- 문의 -->
+    <section class="contact-card">
+
+        <div class="contact-title">
+            DayJeong에 문의하기
+        </div>
+
+        <div class="contact-links">
+
+            <a href="mailto:dayjeong.app@gmail.com">
+                Mail
+            </a>
+
+            <a
+                href="https://www.instagram.com/dayjeong.app/"
+                target="_blank"
+            >
+                Instagram
+            </a>
+
+            <a
+                href="https://pf.kakao.com/_wktuX"
+                target="_blank"
+            >
+                KakaoTalk
+            </a>
+
+        </div>
+
+    </section>
+
 </div>
 
-<div class="card">
-    <h2>📅 오늘의 일정</h2>
-    <div id="today"></div>
 
-    <h3>📌 예정된 일정</h3>
-    <div id="upcoming"></div>
-</div>
 
-<div class="contact">
-    <p>Mail: <a href="mailto:dayjeong.app@gmail.com">dayjeong.app@gmail.com</a></p>
-    <p>Instagram: <a href="https://www.instagram.com/dayjeong.app/" target="_blank">@dayjeong.app</a></p>
-    <p>kakaoTalk: <a href="https://pf.kakao.com/_wktuX" target="_blank">데이정(DayJeong)</a></p>
-</div>
+<!-- 하단 네비 -->
+<nav class="bottom-nav">
 
-</div>
+    <a
+        href="/"
+        class="nav-item active"
+    >
+        <span class="nav-icon">⌂</span>
+        홈
+    </a>
 
-<div class="bottom-nav">
-    <a href="/">🏠 홈</a>
-    <a href="/add/">📅 일정</a>
-    <a href="/friends/">👥 친구</a>
-    <a href="/settings/">⚙ 설정</a>
-</div>
+
+    <a
+        href="/add/"
+        class="nav-item"
+    >
+        <span class="nav-icon">▣</span>
+        일정
+    </a>
+
+
+    <a
+        href="/friends/"
+        class="nav-item"
+    >
+        <span class="nav-icon">♟</span>
+        친구
+    </a>
+
+
+    <a
+        href="/settings/"
+        class="nav-item"
+    >
+        <span class="nav-icon">⚙</span>
+        설정
+    </a>
+
+</nav>
+
+
 
 <script>
-function load(){
+
+/*
+==================================
+오늘 날짜
+==================================
+*/
+
+function showTodayDate() {
+
     const today = new Date();
-    const tBox = document.getElementById("today");
-    const uBox = document.getElementById("upcoming");
 
-    tBox.innerHTML = "";
-    uBox.innerHTML = "";
+    const days = [
+        "일요일",
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일"
+    ];
 
-    for(let i=0;i<=6;i++){
-        const d = new Date();
-        d.setDate(today.getDate()+i);
 
-        const y = d.getFullYear();
-        const m = d.getMonth();
-        const day = d.getDate();
+    document.getElementById("todayDate").innerText =
+        `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 ${days[today.getDay()]}`;
 
-        const key = `cal-${y}-${m}`;
-        const saved = JSON.parse(localStorage.getItem(key)) || {};
-        const schedules = saved[day];
-
-        if(i===0){
-            render(tBox, schedules, true);
-        } else {
-            render(uBox, schedules, false, d);
-        }
-    }
 }
 
-function render(box, schedules, isToday, date=null){
-    if(!schedules){
-        if(isToday){
-            const div = document.createElement("div");
-            div.className="schedule-box 없음";
-            div.innerText="오늘 일정 없음";
-            box.appendChild(div);
+
+
+/*
+==================================
+일정 불러오기
+==================================
+*/
+
+function loadSchedules() {
+
+    const today = new Date();
+
+    const todayBox =
+        document.getElementById("today");
+
+    const upcomingBox =
+        document.getElementById("upcoming");
+
+
+    todayBox.innerHTML = "";
+    upcomingBox.innerHTML = "";
+
+
+    let upcomingCount = 0;
+
+
+    for (let i = 0; i <= 6; i++) {
+
+        const d = new Date();
+
+        d.setDate(
+            today.getDate() + i
+        );
+
+
+        const y = d.getFullYear();
+
+        const m = d.getMonth();
+
+        const day = d.getDate();
+
+
+        const key =
+            `cal-${y}-${m}`;
+
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(key)
+            ) || {};
+
+
+        const schedules =
+            saved[day];
+
+
+        if (i === 0) {
+
+            renderSchedule(
+                todayBox,
+                schedules,
+                true,
+                d
+            );
+
+        } else if (schedules) {
+
+            renderSchedule(
+                upcomingBox,
+                schedules,
+                false,
+                d
+            );
+
+            upcomingCount++;
+
         }
+
+    }
+
+
+    /*
+    앞으로 일정이 하나도 없는 경우
+    */
+
+    if (upcomingCount === 0) {
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "schedule-box 없음";
+
+        empty.innerText =
+            "예정된 일정이 없어요";
+
+        upcomingBox.appendChild(
+            empty
+        );
+
+    }
+
+}
+
+
+
+/*
+==================================
+일정 카드 생성
+==================================
+*/
+
+function renderSchedule(
+    box,
+    schedules,
+    isToday,
+    date
+) {
+
+    /*
+    일정 없음
+    */
+
+    if (!schedules || schedules.length === 0) {
+
+        if (isToday) {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "schedule-box 없음";
+
+            div.innerText =
+                "오늘은 등록된 일정이 없어요";
+
+            box.appendChild(div);
+
+        }
+
         return;
     }
 
-    let status = schedules.length>1 ? "겹침" : schedules[0].status;
 
-    const div = document.createElement("div");
-    div.className="schedule-box "+status;
+    /*
+    일정 2개 이상 = 겹침
+    */
 
-    let text = isToday ? "오늘 - " : `${date.getMonth()+1}/${date.getDate()} - `;
+    let status =
+        schedules.length > 1
+        ? "겹침"
+        : schedules[0].status;
 
-    schedules.forEach(s=> text+=s.title+" ");
-    text+=`(${status})`;
 
-    div.innerText=text;
+    const div =
+        document.createElement("div");
+
+
+    div.className =
+        "schedule-box " + status;
+
+
+    /*
+    날짜
+    */
+
+    let text = "";
+
+    if (isToday) {
+
+        text = "오늘 · ";
+
+    } else {
+
+        text =
+            `${date.getMonth() + 1}월
+             ${date.getDate()}일 · `;
+
+    }
+
+
+    /*
+    일정 제목
+    */
+
+    text += schedules
+        .map(schedule => schedule.title)
+        .join(" · ");
+
+
+    div.innerText = text;
+
+
     box.appendChild(div);
+
 }
 
-load();
+
+
+/*
+==================================
+실행
+==================================
+*/
+
+showTodayDate();
+loadSchedules();
+
 </script>
+
 
 </body>
 </html>

@@ -15,7 +15,7 @@ urlpatterns = [
     path('logout/', views.logout_view),    # 로그아웃
 
     # ⚙️ 설정 (임시 페이지)
-    path('settings/', views.coming),
+    path('settings/', views.settings_page),
 
     # 👥 친구 기능
     path('friends/', views.friends),             # 친구 목록
